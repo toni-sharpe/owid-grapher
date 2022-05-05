@@ -216,7 +216,6 @@ export class StackedBarChart
             inputTable,
             hoverSeries,
             series,
-            rawSeries,
         } = this
         if (hoverBar === undefined) return
 
@@ -230,7 +229,6 @@ export class StackedBarChart
         const yColumn = yColumns[0] // we can just use the first column for formatting, b/c we assume all columns have same type
         let total = 0
         let currentValue  = 0
-        let value = 0
         return (
             <Tooltip
                 id={this.renderUid}
@@ -248,7 +246,9 @@ export class StackedBarChart
                 >
                     <tbody>
                         <tr>
-                            <td>
+                            <td
+                                colSpan={2}
+                            >
                                 <h3
                                     style={{
                                         padding: "0.3em 0.9em",
@@ -263,9 +263,7 @@ export class StackedBarChart
                                 </h3>
                             </td>
                         </tr>
-                        {console.log(series)}
-                        {console.log(yColumn)}
-                        {series.map((series, index) => {
+                        {series.map((series) => {
                             // currentValue = series.points[index].value
                             series.points.map((bar, index) => {
                                 if (bar.position === hoverBar.position) {
@@ -274,7 +272,13 @@ export class StackedBarChart
                                 }
                             })
                             return (
-                                <tr>
+                                <tr
+                                    style={{
+                                        fontWeight: 
+                                        hoverSeries?.seriesName === series.seriesName 
+                                        ? "bold" : undefined
+                                    }}
+                                >
                                     <td>
                                         {series.seriesName}
                                     </td>
