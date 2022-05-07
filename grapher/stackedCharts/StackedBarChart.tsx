@@ -263,7 +263,7 @@ export class StackedBarChart
                                 </h3>
                             </td>
                         </tr>
-                        {series.map((series) => {
+                        {[...series].reverse().map((series) => {
                             // currentValue = series.points[index].value
                             series.points.map((bar, index) => {
                                 if (bar.position === hoverBar.position) {
