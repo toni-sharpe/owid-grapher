@@ -246,7 +246,7 @@ export class StackedBarChart
                 >
                     <tbody>
                         <tr>
-                            <td colSpan={2}>
+                            <td colSpan={3}>
                                 <h3
                                     style={{
                                         padding: "0.3em 0.9em",
@@ -280,8 +280,19 @@ export class StackedBarChart
                                                 ? "bold"
                                                 : undefined,
                                         fontSize: "0.9em",
+                                        textAlign: "left",
                                     }}
                                 >
+                                    <td>
+                                        <div
+                                            style={{
+                                                width: "10px",
+                                                height: "10px",
+                                                backgroundColor: series.color,
+                                                display: "inline-block",
+                                            }}
+                                        />
+                                    </td>
                                     <td>{series.seriesName}</td>
                                     <td>
                                         {yColumn.formatValueLong(currentValue)}
@@ -294,6 +305,7 @@ export class StackedBarChart
                                 fontSize: "0.9em",
                             }}
                         >
+                            <td></td>
                             <td>Total</td>
                             <td
                                 style={{
