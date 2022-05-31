@@ -250,7 +250,10 @@ export class StackedAreaChart
         const boxPadding = isMobile() ? 44 : 25
 
         // expand the box width, so it's easier to see the tooltip for the first & last timepoints
-        const boundedBox = this.dualAxis.innerBounds.padWidth(-boxPadding)
+        const boundedBox = this.dualAxis.innerBounds.expand({
+            left: boxPadding,
+            right: boxPadding,
+        })
 
         if (boundedBox.contains(mouse)) {
             const closestPoint = minBy(series[0].points, (d) =>
