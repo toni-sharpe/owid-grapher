@@ -57,7 +57,7 @@ export class EditorTextTab extends React.Component<{ editor: ChartEditor }> {
     }
 
     render() {
-        const { grapher, references } = this.props.editor
+        const { grapher, references, details } = this.props.editor
         const { relatedQuestions } = grapher
 
         return (

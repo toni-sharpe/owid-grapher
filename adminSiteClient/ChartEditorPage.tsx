@@ -45,6 +45,9 @@ import {
 } from "./VisionDeficiencies.js"
 import { EditorMarimekkoTab } from "./EditorMarimekkoTab.js"
 import { Topic } from "../grapher/core/GrapherConstants.js"
+import { Detail } from "./DetailsOnDemand.js"
+import { set } from "lodash"
+import { GrapherInterface } from "../grapher/core/GrapherInterface.js"
 
 @observer
 class TabBinder extends React.Component<{ editor: ChartEditor }> {
@@ -80,6 +83,15 @@ class TabBinder extends React.Component<{ editor: ChartEditor }> {
     }
 }
 
+function extractDetailsSyntax(str: string): [string, string][] {
+    const pattern = /\(hover::(\w+)::(\w+)\)/g
+
+    return [...str.matchAll(pattern)].map(([_, category, term]) => [
+        category,
+        term,
+    ])
+}
+
 @observer
 export class ChartEditorPage
     extends React.Component<{
@@ -95,6 +107,7 @@ export class ChartEditorPage
     @observable references: PostReference[] = []
     @observable redirects: ChartRedirect[] = []
     @observable allTopics: Topic[] = []
+    @observable details: Detail[] = []
 
     @observable.ref grapherElement?: JSX.Element
 
@@ -186,6 +199,16 @@ export class ChartEditorPage
         runInAction(() => (this.allTopics = json.topics))
     }
 
+    async fetchDetails(): Promise<void> {
+        const data = (await this.context.admin.getJSON(`/api/details`)) as {
+            details: Detail[]
+        }
+
+        runInAction(() => {
+            this.details = data.details
+        })
+    }
+
     @computed get admin(): Admin {
         return this.context.admin
     }
@@ -198,6 +221,7 @@ export class ChartEditorPage
 
     @action.bound refresh(): void {
         this.fetchGrapher()
+        this.fetchDetails()
         this.fetchData()
         this.fetchLogs()
         this.fetchRefs()
@@ -206,6 +230,7 @@ export class ChartEditorPage
     }
 
     dispose!: IReactionDisposer
+    disposeDetailsReaction!: IReactionDisposer
     componentDidMount(): void {
         this.refresh()
 
@@ -220,6 +245,38 @@ export class ChartEditorPage
                 }
             }
         )
+
+        this.disposeDetailsReaction = reaction(
+            () => [this.grapher.subtitle, this.grapher.note],
+            (stringsToParse) => {
+                const getDetail = ([category, term]: [string, string]):
+                    | Detail
+                    | undefined => {
+                    const detail = this.details.find(
+                        (detail) =>
+                            detail.category === category && detail.term === term
+                    )
+                    if (!detail) {
+                        // error?
+                    }
+                    return detail
+                }
+
+                const detailsNeededForGrapherConfig: GrapherInterface["details"] =
+                    stringsToParse
+                        .flatMap(extractDetailsSyntax)
+                        .reduce(
+                            (details, categoryAndTerm) =>
+                                set(
+                                    details,
+                                    categoryAndTerm,
+                                    getDetail(categoryAndTerm)
+                                ),
+                            {}
+                        )
+                this.grapher.details = detailsNeededForGrapherConfig
+            }
+        )
     }
 
     // This funny construction allows the "new chart" link to work by forcing an update
@@ -230,6 +287,7 @@ export class ChartEditorPage
 
     componentWillUnmount(): void {
         this.dispose()
+        this.disposeDetailsReaction()
     }
 
     render(): JSX.Element {

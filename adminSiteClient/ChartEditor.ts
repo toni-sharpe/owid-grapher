@@ -5,12 +5,13 @@
  *
  */
 
-import { observable, computed, runInAction, when } from "mobx"
+import { observable, computed, runInAction, when, autorun } from "mobx"
 import { Grapher } from "../grapher/core/Grapher.js"
 import { EditorFeatures } from "./EditorFeatures.js"
 import { Admin } from "./Admin.js"
 import { BAKED_GRAPHER_URL } from "../settings/clientSettings.js"
 import { Topic } from "../grapher/core/GrapherConstants.js"
+import { Detail } from "./DetailsOnDemand.js"
 
 type EditorTab = string
 
@@ -78,6 +79,7 @@ export interface ChartEditorManager {
     references: PostReference[]
     redirects: ChartRedirect[]
     allTopics: Topic[]
+    details: Detail[]
 }
 
 interface VariableIdUsageRecord {
@@ -136,6 +138,10 @@ export class ChartEditor {
 
     @computed get allTopics() {
         return this.manager.allTopics
+    }
+
+    @computed get details() {
+        return this.manager.details
     }
 
     @computed get availableTabs(): EditorTab[] {

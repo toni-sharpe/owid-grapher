@@ -7,7 +7,7 @@ import { AdminAppContext, AdminAppContextType } from "./AdminAppContext.js"
 import { every, sortBy } from "lodash"
 import { Controlled } from "react-codemirror2"
 
-interface Detail {
+export interface Detail {
     category: string
     term: string
     title: string
