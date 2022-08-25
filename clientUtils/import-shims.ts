@@ -30,7 +30,11 @@ export function getModuleDefault<T>(module: T): T {
 import _AnimateHeight from "react-animate-height"
 import _ReactSelect from "react-select"
 import _TippyReact from "@tippyjs/react"
+import _ReactHorizontalScrollingMenu from "react-horizontal-scrolling-menu"
 
 export const AnimateHeight = getModuleDefault(_AnimateHeight)
 export const ReactSelect = getModuleDefault(_ReactSelect)
 export const TippyReact = getModuleDefault(_TippyReact)
+export const ReactHorizontalScrollingMenu = getModuleDefault(
+    _ReactHorizontalScrollingMenu
+)

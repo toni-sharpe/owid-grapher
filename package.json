@@ -37,7 +37,8 @@
         "testLint": "eslint .",
         "testPrettierAll": "yarn prettier --check \"**/*.{tsx,ts,jsx,js,json,md,html,css,scss,yml,php}\"",
         "testPrettierChanged": "yarn fixPrettierChanged --check",
-        "testJest": "find ./itsJustJavascript -type f  -name \\*.test.js | sort -R | xargs -L 5 -P 4 node --experimental-vm-modules ./node_modules/.bin/jest"
+        "testJest": "find ./itsJustJavascript -type f  -name \\*.test.js | sort -R | xargs -L 5 -P 4 node --experimental-vm-modules ./node_modules/.bin/jest",
+        "testJestSingleThreaded": "yarn node --experimental-vm-modules ./node_modules/.bin/jest"
     },
     "dependencies": {
         "@bugsnag/core": "^7.17.0",
