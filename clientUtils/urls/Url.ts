@@ -6,7 +6,7 @@ import { QueryParams, queryParamsToStr, strToQueryParams } from "./UrlUtils.js"
 
 const parseUrl = (
     url: string
-): Omit<urlParseLib, "query"> & { query: string } => {
+): Omit<urlParseLib<string>, "query"> & { query: string } => {
     const parsed = urlParseLib(url, {})
     // The library returns an unparsed string for `query`, its types aren't quite right.
     const query = parsed.query.toString()
