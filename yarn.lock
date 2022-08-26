@@ -1547,10 +1547,9 @@
   resolved "https://registry.yarnpkg.com/@gar/promisify/-/promisify-1.1.3.tgz#555193ab2e3bb3b6adc3d551c9c030d9e860daf6"
   integrity sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==
 
-"@handsontable/react@^12.1.2":
+"@handsontable/react@https://gitpkg.now.sh/owid/handsontable/wrappers/react?react-wrapper-switch-to-cjs-and-mjs-with-dist":
   version "12.1.2"
-  resolved "https://registry.yarnpkg.com/@handsontable/react/-/react-12.1.2.tgz#44b525d563191d5e3d4b0f64e38d60ba10b83088"
-  integrity sha512-brXQJjTDVWDshyn6qHezRJlfFLH35x6/61slzQq+FhKoYvymDxI/Vt9hNvIOjFtrl+2Gb9tXkp/sih1zvlvqBg==
+  resolved "https://gitpkg.now.sh/owid/handsontable/wrappers/react?react-wrapper-switch-to-cjs-and-mjs-with-dist#be28db1531f09d965d62c5766d8252df39d9e929"
 
 "@humanwhocodes/config-array@^0.10.4":
   version "0.10.4"
@@ -14655,7 +14654,7 @@ pg-connection-string@2.5.0:
   resolved "https://registry.yarnpkg.com/pg-connection-string/-/pg-connection-string-2.5.0.tgz#538cadd0f7e603fc09a12590f3b8a452c2c0cf34"
   integrity sha512-r5o/V/ORTA6TmUnyWZR9nCj1klXCO2CEKNRlVuJptZe85QuhFayC7WeMic7ndayT5IRIR0S0xFxFi2ousartlQ==
 
-"php-parser@github:glayzzle/php-parser#5a0e2e1bf12517bd1c544c0f4e68482d0362a7b5":
+php-parser@glayzzle/php-parser#5a0e2e1bf12517bd1c544c0f4e68482d0362a7b5:
   version "3.0.1"
   resolved "https://codeload.github.com/glayzzle/php-parser/tar.gz/5a0e2e1bf12517bd1c544c0f4e68482d0362a7b5"
 

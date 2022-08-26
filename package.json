@@ -49,7 +49,7 @@
         "@fortawesome/free-regular-svg-icons": "^6.1.1",
         "@fortawesome/free-solid-svg-icons": "^6.1.1",
         "@fortawesome/react-fontawesome": "^0.1.18",
-        "@handsontable/react": "^12.1.2",
+        "@handsontable/react": "https://gitpkg.now.sh/owid/handsontable/wrappers/react?react-wrapper-switch-to-cjs-and-mjs-with-dist",
         "@prettier/plugin-php": "^0.14.3",
         "@tippyjs/react": "^4.2.6",
         "@types/amplitude-js": "^7.0.1",
