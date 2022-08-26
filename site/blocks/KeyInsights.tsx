@@ -1,6 +1,9 @@
 import React, { useCallback, useContext, useEffect, useState } from "react"
 import ReactDOM from "react-dom"
-import { ReactHorizontalScrollingMenu } from "../../clientUtils/import-shims.js"
+import {
+    ReactHorizontalScrollingMenuScrollMenu,
+    ReactHorizontalScrollingMenuVisibilityContext,
+} from "../../clientUtils/import-shims.js"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons/faAngleRight"
 import { KeyInsight } from "../../clientUtils/owidTypes.js"
@@ -15,7 +18,7 @@ export const KEY_INSIGHTS_SLIDE_CLASS_NAME = "slide"
 export const KEY_INSIGHTS_SLIDE_CONTENT_CLASS_NAME = "content"
 
 type scrollVisibilityApiType = React.ContextType<
-    typeof ReactHorizontalScrollingMenu.VisibilityContext
+    typeof ReactHorizontalScrollingMenuVisibilityContext
 >
 
 const Thumb = ({
@@ -158,7 +161,7 @@ export const KeyInsightsThumbs = ({ titles }: { titles: string[] }) => {
             role="tablist"
             ref={thumbsRef}
         >
-            <ReactHorizontalScrollingMenu.ScrollMenu
+            <ReactHorizontalScrollingMenuScrollMenu
                 LeftArrow={LeftArrow}
                 RightArrow={RightArrow}
                 transitionDuration={200}
@@ -178,7 +181,7 @@ export const KeyInsightsThumbs = ({ titles }: { titles: string[] }) => {
                         />
                     )
                 })}
-            </ReactHorizontalScrollingMenu.ScrollMenu>
+            </ReactHorizontalScrollingMenuScrollMenu>
         </div>
     )
 }
@@ -234,7 +237,7 @@ const LeftArrow = () => {
         scrollPrev,
         visibleItemsWithoutSeparators,
         initComplete,
-    } = useContext(ReactHorizontalScrollingMenu.VisibilityContext)
+    } = useContext(ReactHorizontalScrollingMenuVisibilityContext)
 
     const [disabled, setDisabled] = useState(
         !initComplete || (initComplete && isFirstItemVisible)
@@ -255,7 +258,7 @@ const LeftArrow = () => {
 
 const RightArrow = () => {
     const { isLastItemVisible, scrollNext, visibleItemsWithoutSeparators } =
-        useContext(ReactHorizontalScrollingMenu.VisibilityContext)
+        useContext(ReactHorizontalScrollingMenuVisibilityContext)
 
     const [disabled, setDisabled] = useState(
         !visibleItemsWithoutSeparators.length && isLastItemVisible

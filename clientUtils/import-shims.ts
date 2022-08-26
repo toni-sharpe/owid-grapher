@@ -30,11 +30,19 @@ export function getModuleDefault<T>(module: T): T {
 import _AnimateHeight from "react-animate-height"
 import _ReactSelect from "react-select"
 import _TippyReact from "@tippyjs/react"
-import _ReactHorizontalScrollingMenu from "react-horizontal-scrolling-menu"
+
+// With the line below the tests work but not the admin
+// import _ReactHorizontalScrollingMenu from "react-horizontal-scrolling-menu"
+// With the line below the admin works but not the tests
+import * as _ReactHorizontalScrollingMenu from "react-horizontal-scrolling-menu"
 
 export const AnimateHeight = getModuleDefault(_AnimateHeight)
 export const ReactSelect = getModuleDefault(_ReactSelect)
 export const TippyReact = getModuleDefault(_TippyReact)
-export const ReactHorizontalScrollingMenu = getModuleDefault(
-    _ReactHorizontalScrollingMenu
+export const ReactHorizontalScrollingMenuScrollMenu = getModuleDefault(
+    _ReactHorizontalScrollingMenu.ScrollMenu
+)
+
+export const ReactHorizontalScrollingMenuVisibilityContext = getModuleDefault(
+    _ReactHorizontalScrollingMenu.VisibilityContext
 )
