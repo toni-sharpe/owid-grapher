@@ -19,7 +19,7 @@ interface SpreadsheetManager {
 export class Spreadsheet extends React.Component<{
     manager: SpreadsheetManager
 }> {
-    private hotTableComponent = React.createRef<HotTable>()
+    private hotTableComponent = React.createRef<typeof HotTable>()
 
     @action.bound private updateFromHot(): void {
         const newVersion =

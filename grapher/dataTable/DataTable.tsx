@@ -731,7 +731,7 @@ function ColumnHeader(props: {
     onClick: () => void
     rowSpan?: number
     colSpan?: number
-    headerText: React.ReactFragment
+    headerText: React.ReactNode
     colType: "entity" | "dimension" | "subdimension"
     dataType: "text" | "numeric"
     subdimensionType?: ColumnKey

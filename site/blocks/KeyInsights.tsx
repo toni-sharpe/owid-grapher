@@ -1,9 +1,8 @@
 import React, { useCallback, useContext, useEffect, useState } from "react"
 import ReactDOM from "react-dom"
-import {
-    ReactHorizontalScrollingMenuScrollMenu,
-    ReactHorizontalScrollingMenuVisibilityContext,
-} from "../../clientUtils/import-shims.js"
+import // ReactHorizontalScrollingMenuScrollMenu,
+// ReactHorizontalScrollingMenuVisibilityContext,
+"../../clientUtils/import-shims.js"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons/faAngleRight"
 import { KeyInsight } from "../../clientUtils/owidTypes.js"
@@ -17,9 +16,7 @@ export const KEY_INSIGHTS_SLIDES_CLASS_NAME = "slides"
 export const KEY_INSIGHTS_SLIDE_CLASS_NAME = "slide"
 export const KEY_INSIGHTS_SLIDE_CONTENT_CLASS_NAME = "content"
 
-type scrollVisibilityApiType = React.ContextType<
-    typeof ReactHorizontalScrollingMenuVisibilityContext
->
+type scrollVisibilityApiType = React.ContextType<any>
 
 const Thumb = ({
     title,
@@ -99,10 +96,9 @@ export const KeyInsightsThumbs = ({ titles }: { titles: string[] }) => {
 
     // Scroll to selected item
     useEffect(() => {
-        const item = apiRef.current.getItemById(selectedId)
-        if (!item) return
-
-        apiRef.current.scrollToItem(item, "smooth", "center", "nearest")
+        // const item = apiRef.current.getItemById(selectedId)
+        // if (!item) return
+        // apiRef.current.scrollToItem(item, "smooth", "center", "nearest")
     }, [selectedId])
 
     // Select active slide when corresponding thumb selected
@@ -161,7 +157,7 @@ export const KeyInsightsThumbs = ({ titles }: { titles: string[] }) => {
             role="tablist"
             ref={thumbsRef}
         >
-            <ReactHorizontalScrollingMenuScrollMenu
+            {/* <ReactHorizontalScrollingMenuScrollMenu
                 LeftArrow={LeftArrow}
                 RightArrow={RightArrow}
                 transitionDuration={200}
@@ -181,7 +177,7 @@ export const KeyInsightsThumbs = ({ titles }: { titles: string[] }) => {
                         />
                     )
                 })}
-            </ReactHorizontalScrollingMenuScrollMenu>
+            </ReactHorizontalScrollingMenuScrollMenu> */}
         </div>
     )
 }
@@ -231,50 +227,50 @@ const Arrow = ({
     )
 }
 
-const LeftArrow = () => {
-    const {
-        isFirstItemVisible,
-        scrollPrev,
-        visibleItemsWithoutSeparators,
-        initComplete,
-    } = useContext(ReactHorizontalScrollingMenuVisibilityContext)
+// const LeftArrow = () => {
+//     const {
+//         isFirstItemVisible,
+//         scrollPrev,
+//         visibleItemsWithoutSeparators,
+//         initComplete,
+//     } = useContext(ReactHorizontalScrollingMenuVisibilityContext)
 
-    const [disabled, setDisabled] = useState(
-        !initComplete || (initComplete && isFirstItemVisible)
-    )
-    useEffect(() => {
-        // NOTE: detect if whole component visible
-        if (visibleItemsWithoutSeparators.length) {
-            setDisabled(isFirstItemVisible)
-        }
-    }, [isFirstItemVisible, visibleItemsWithoutSeparators])
+//     const [disabled, setDisabled] = useState(
+//         !initComplete || (initComplete && isFirstItemVisible)
+//     )
+//     useEffect(() => {
+//         // NOTE: detect if whole component visible
+//         if (visibleItemsWithoutSeparators.length) {
+//             setDisabled(isFirstItemVisible)
+//         }
+//     }, [isFirstItemVisible, visibleItemsWithoutSeparators])
 
-    return !disabled ? (
-        <Arrow disabled={false} onClick={() => scrollPrev()} className="left">
-            <FontAwesomeIcon icon={faAngleRight} flip="horizontal" />
-        </Arrow>
-    ) : null
-}
+//     return !disabled ? (
+//         <Arrow disabled={false} onClick={() => scrollPrev()} className="left">
+//             <FontAwesomeIcon icon={faAngleRight} flip="horizontal" />
+//         </Arrow>
+//     ) : null
+// }
 
-const RightArrow = () => {
-    const { isLastItemVisible, scrollNext, visibleItemsWithoutSeparators } =
-        useContext(ReactHorizontalScrollingMenuVisibilityContext)
+// const RightArrow = () => {
+//     const { isLastItemVisible, scrollNext, visibleItemsWithoutSeparators } =
+//         useContext(ReactHorizontalScrollingMenuVisibilityContext)
 
-    const [disabled, setDisabled] = useState(
-        !visibleItemsWithoutSeparators.length && isLastItemVisible
-    )
-    useEffect(() => {
-        if (visibleItemsWithoutSeparators.length) {
-            setDisabled(isLastItemVisible)
-        }
-    }, [isLastItemVisible, visibleItemsWithoutSeparators])
+//     const [disabled, setDisabled] = useState(
+//         !visibleItemsWithoutSeparators.length && isLastItemVisible
+//     )
+//     useEffect(() => {
+//         if (visibleItemsWithoutSeparators.length) {
+//             setDisabled(isLastItemVisible)
+//         }
+//     }, [isLastItemVisible, visibleItemsWithoutSeparators])
 
-    return !disabled ? (
-        <Arrow disabled={false} onClick={() => scrollNext()} className="right">
-            <FontAwesomeIcon icon={faAngleRight} />
-        </Arrow>
-    ) : null
-}
+//     return !disabled ? (
+//         <Arrow disabled={false} onClick={() => scrollNext()} className="right">
+//             <FontAwesomeIcon icon={faAngleRight} />
+//         </Arrow>
+//     ) : null
+// }
 
 export const hydrateKeyInsights = () => {
     document

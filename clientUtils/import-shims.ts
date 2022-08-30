@@ -43,6 +43,5 @@ export const ReactHorizontalScrollingMenuScrollMenu = getModuleDefault(
     _ReactHorizontalScrollingMenu.ScrollMenu
 )
 
-export const ReactHorizontalScrollingMenuVisibilityContext = getModuleDefault(
-    _ReactHorizontalScrollingMenu.VisibilityContext
-)
+export const ReactHorizontalScrollingMenuVisibilityContext: any =
+    getModuleDefault(_ReactHorizontalScrollingMenu.VisibilityContext)
