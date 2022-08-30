@@ -8,7 +8,7 @@ import {
     makeFullPath,
 } from "../explorer/ExplorerProgram.js"
 import { GitCmsClient } from "../gitCms/GitCmsClient.js"
-import { Prompt } from "react-router-dom"
+import { Prompt } from "../clientUtils/Prompt.js"
 import Handsontable from "handsontable"
 import { CoreMatrix } from "../coreTable/CoreTableConstants.js"
 import {
