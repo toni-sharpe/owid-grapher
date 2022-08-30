@@ -373,10 +373,14 @@ export const formatWordpressPost = async (
     if (grapherExports) {
         const grapherIframes = cheerioEl("iframe")
             .toArray()
-            .filter((el) => (el.attribs["src"] || "").match(/\/grapher\//))
+            .filter((el) =>
+                ((el as cheerio.TagElement).attribs["src"] || "").match(
+                    /\/grapher\//
+                )
+            )
         for (const el of grapherIframes) {
             const $el = cheerioEl(el)
-            const src = el.attribs["src"].trim()
+            const src = (el as cheerio.TagElement).attribs["src"].trim()
             const chart = grapherExports.get(src)
             if (chart) {
                 const output = `
@@ -389,7 +393,7 @@ export const formatWordpressPost = async (
                         </div>
                     </a>
                 </figure>`
-                if (el.parent.tagName === "p") {
+                if ((el.parent as cheerio.TagElement).tagName === "p") {
                     // We are about to replace <iframe> with <figure>. However, there cannot be <figure> within <p>,
                     // so we are lifting the <figure> out.
                     // Where does this markup  come from? Historically, wpautop wrapped <iframe> in <p>. Some non-Gutengerg
@@ -401,7 +405,9 @@ export const formatWordpressPost = async (
                     const $p = $el.parent()
                     $p.after(output)
                     $el.remove()
-                } else if (el.parent.tagName === "figure") {
+                } else if (
+                    (el.parent as cheerio.TagElement).tagName === "figure"
+                ) {
                     // Support for <iframe> wrapped in <figure>
                     // <figure> automatically added by Gutenberg on copy / paste <iframe>
                     // Lifting up <iframe> out of <figure>, before it becomes a <figure> itself.
@@ -423,14 +429,18 @@ export const formatWordpressPost = async (
     const explorerIframes = cheerioEl("iframe")
         .toArray()
         .filter((el) =>
-            (el.attribs["src"] || "").includes(`/${EXPLORERS_ROUTE_FOLDER}/`)
+            ((el as cheerio.TagElement).attribs["src"] || "").includes(
+                `/${EXPLORERS_ROUTE_FOLDER}/`
+            )
         )
     for (const el of explorerIframes) {
         const $el = cheerioEl(el)
-        const src = el.attribs["src"].trim()
+        const src = (el as cheerio.TagElement).attribs["src"].trim()
         // set a default style if none exists on the existing iframe
-        const style = el.attribs["style"] || "width: 100%; height: 600px;"
-        const cssClass = el.attribs["class"]
+        const style =
+            (el as cheerio.TagElement).attribs["style"] ||
+            "width: 100%; height: 600px;"
+        const cssClass = (el as cheerio.TagElement).attribs["class"]
         const $figure = cheerioEl(
             ReactDOMServer.renderToStaticMarkup(
                 <figure data-explorer-src={src} className={cssClass}>
@@ -446,15 +456,14 @@ export const formatWordpressPost = async (
     // Any remaining iframes
     for (const iframe of cheerioEl("iframe").toArray()) {
         // Ensure https embeds
-        if (HTTPS_ONLY && iframe.attribs["src"]) {
-            iframe.attribs["src"] = iframe.attribs["src"].replace(
-                "http://",
-                "https://"
-            )
+        if (HTTPS_ONLY && (iframe as cheerio.TagElement).attribs["src"]) {
+            ;(iframe as cheerio.TagElement).attribs["src"] = (
+                iframe as cheerio.TagElement
+            ).attribs["src"].replace("http://", "https://")
         }
         // Lazy load unless "loading" attribute already specified
-        if (!iframe.attribs["loading"]) {
-            iframe.attribs["loading"] = "lazy"
+        if (!(iframe as cheerio.TagElement).attribs["loading"]) {
+            ;(iframe as cheerio.TagElement).attribs["loading"] = "lazy"
         }
     }
 
@@ -475,7 +484,9 @@ export const formatWordpressPost = async (
     // Make sticky-right layout the default for columns
     cheerioEl(".wp-block-columns").each((_, columns) => {
         const $columns = cheerioEl(columns)
-        if (columns.attribs.class === "wp-block-columns") {
+        if (
+            (columns as cheerio.TagElement).attribs.class === "wp-block-columns"
+        ) {
             $columns.addClass("is-style-sticky-right")
         }
     })

@@ -1,7 +1,7 @@
 import * as db from "../db/db.js"
 import { getDataForMultipleVariables } from "../db/model/Variable.js"
 import fs from "fs-extra"
-import svgo from "svgo"
+import svgo, { OptimizedError, OptimizedSvg } from "svgo"
 import sharp from "sharp"
 import * as path from "path"
 import { GrapherInterface } from "../grapher/core/GrapherInterface.js"
@@ -205,9 +205,18 @@ const svgoConfig: svgo.OptimizeOptions = {
     ],
 }
 
+const isSVGOError = (
+    result: OptimizedSvg | OptimizedError
+): result is OptimizedError => {
+    return typeof result.error === "string"
+}
+
 async function optimizeSvg(svgString: string): Promise<string> {
     const optimizedSvg = await svgo.optimize(svgString, svgoConfig)
-    return optimizedSvg.data
+    if (!isSVGOError(optimizedSvg)) {
+        return optimizedSvg.data
+    }
+    return new Promise(() => "Error")
 }
 
 export async function grapherToSVG(

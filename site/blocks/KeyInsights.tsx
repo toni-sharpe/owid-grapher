@@ -52,15 +52,15 @@ const Thumb = ({
  */
 export const KeyInsightsThumbs = ({ titles }: { titles: string[] }) => {
     const [selectedId, setSelectedId] = useState<string>("0")
-    const [slides, setSlides] = useState<HTMLElement | null>(null)
-    const [slug, setSlug] = useState<string>("")
+    const [slides, setSlides] = useState<Element | null | undefined>(null)
+    const [slug, setSlug] = useState<string | null | undefined>("")
     const apiRef = React.useRef({} as scrollVisibilityApiType)
 
     // Not using useRef() here so that the  "select slide based on hash" effect,
     // running on page load only, runs after the ref has been attached (and not
     // on first render, which would be before)
     // https://reactjs.org/docs/hooks-faq.html#how-can-i-measure-a-dom-node
-    const thumbsRef = useCallback((node) => {
+    const thumbsRef = useCallback((node: HTMLElement | null) => {
         if (node !== null) {
             const keyInsightsNode = node.parentElement?.parentElement
 

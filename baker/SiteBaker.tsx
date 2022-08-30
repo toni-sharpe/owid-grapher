@@ -81,9 +81,13 @@ export class SiteBaker {
                 ...$("iframe")
                     .toArray()
                     .filter((el) =>
-                        (el.attribs["src"] || "").match(/\/grapher\//)
+                        ((el as cheerio.TagElement).attribs["src"] || "").match(
+                            /\/grapher\//
+                        )
                     )
-                    .map((el) => el.attribs["src"].trim())
+                    .map((el) =>
+                        (el as cheerio.TagElement).attribs["src"].trim()
+                    )
             )
         }
         grapherUrls = lodash.uniq(grapherUrls)
