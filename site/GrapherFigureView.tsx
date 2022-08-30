@@ -5,10 +5,18 @@ import { observer } from "mobx-react"
 import { Bounds } from "../clientUtils/Bounds.js"
 import { Grapher } from "../grapher/core/Grapher.js"
 
+// Real definition is in adminSiteClient/AdminAppContext.ts
+// Redefining here because /site can't import from /adminSiteClient
+const AdminAppContext: React.Context<{
+    admin: { settings: { DATA_API_FOR_ADMIN_UI: "" } }
+}> = React.createContext({}) as any
+
 // Wrapper for Grapher that uses css on figure element to determine the bounds
 @observer
 export class GrapherFigureView extends React.Component<{ grapher: Grapher }> {
     base: React.RefObject<HTMLDivElement> = React.createRef()
+    static contextType = AdminAppContext
+    declare context: React.ContextType<typeof AdminAppContext>
     @observable.ref bounds?: Bounds
 
     @action.bound calcBounds() {
