@@ -33,12 +33,12 @@ export const GlossaryLink = ({
 )
 
 export const formatGlossaryTerms = (
-    $: CheerioStatic,
-    $contents: Cheerio,
+    $: cheerio.Selector,
+    $contents: cheerio.Cheerio,
     mutableGlossary: GlossaryItem[]
 ) => {
     $contents.each((i, el) => {
-        if (FORBIDDEN_TAGS.includes(el.tagName)) return
+        if (FORBIDDEN_TAGS.includes((el as cheerio.TagElement).tagName)) return
         if (el.type === "text") {
             $(el).replaceWith(
                 _linkGlossaryTermsInText(el.data, mutableGlossary)

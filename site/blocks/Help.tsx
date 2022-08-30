@@ -26,8 +26,8 @@ const Help = ({
     )
 }
 
-export const renderHelp = (cheerioEl: CheerioStatic) =>
-    cheerioEl("block[type='help']").each(function (this: CheerioElement) {
+export const renderHelp = (cheerioEl: cheerio.Selector) =>
+    cheerioEl("block[type='help']").each(function (this: cheerio.Element) {
         const $block = cheerioEl(this)
         const title = $block.find("h4").remove().text() || null
         const content = $block.find("content").html() // the title has been removed so the rest of the block is content.

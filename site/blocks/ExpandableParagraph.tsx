@@ -55,7 +55,7 @@ export const hydrateExpandableParagraphs = () => {
     })
 }
 
-export const renderExpandableParagraphs = ($: CheerioStatic) => {
+export const renderExpandableParagraphs = ($: cheerio.Selector) => {
     const expandableParagraphs = $('block[type="expandable-paragraph"]')
     expandableParagraphs.each((_, eP) => {
         const $el = $(eP)

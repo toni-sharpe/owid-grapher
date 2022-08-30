@@ -185,14 +185,14 @@ export const isCanonicalInternalUrl = (url: Url): boolean => {
  *   with lightboxes. Chosen over preventDefault() in front-end code to avoid
  *   clicks before javascript executes.
  */
-export const formatImages = ($: CheerioStatic) => {
+export const formatImages = ($: cheerio.Selector) => {
     for (const el of $("img").toArray()) {
         const $el = $(el)
         if ($el.closest("[data-no-img-formatting]").length) continue
 
         // Recreate source image path by removing automatically added image
         // dimensions (e.g. remove 800x600).
-        const src = el.attribs["src"]
+        const src = (el as cheerio.TagElement).attribs["src"]
         const parsedPath = path.parse(src)
         let originalFilename = ""
 
@@ -203,25 +203,26 @@ export const formatImages = ($: CheerioStatic) => {
                 name: originalFilename,
                 ext: parsedPath.ext,
             })
-            el.attribs["data-high-res-src"] = originalSrc
+            ;(el as cheerio.TagElement).attribs["data-high-res-src"] =
+                originalSrc
         } else {
             originalFilename = parsedPath.name
         }
 
         // Remove wrapping <a> tag, conflicting with lightbox (cf. assumptions above)
-        if (el.parent.tagName === "a") {
+        if ((el.parent as cheerio.TagElement).tagName === "a") {
             const $a = $(el.parent)
             $a.replaceWith($el)
         }
 
-        if (!el.attribs["alt"]) {
-            el.attribs["alt"] = capitalize(
+        if (!(el as cheerio.TagElement).attribs["alt"]) {
+            ;(el as cheerio.TagElement).attribs["alt"] = capitalize(
                 originalFilename.replace(/[-_]/g, " ")
             )
         }
 
-        if (!el.attribs["loading"]) {
-            el.attribs["loading"] = "lazy"
+        if (!(el as cheerio.TagElement).attribs["loading"]) {
+            ;(el as cheerio.TagElement).attribs["loading"] = "lazy"
         }
     }
 }

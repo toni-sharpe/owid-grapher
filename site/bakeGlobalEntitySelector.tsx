@@ -7,8 +7,9 @@ import {
     GLOBAL_ENTITY_SELECTOR_ELEMENT,
 } from "../grapher/controls/globalEntitySelector/GlobalEntitySelectorConstants.js"
 import { SelectionArray } from "../grapher/selection/SelectionArray.js"
+import cheerio from "cheerio"
 
-export const bakeGlobalEntitySelector = (cheerioEl: CheerioStatic) => {
+export const bakeGlobalEntitySelector = (cheerioEl: cheerio.Selector) => {
     // The data attr used to be `data-entity-select`, but later changed for consistency in the code.
     // But we should still support the old attribute.
     cheerioEl(`*[data-entity-select], ${GLOBAL_ENTITY_SELECTOR_ELEMENT}`).each(

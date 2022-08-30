@@ -163,8 +163,12 @@ export const renderPost = async (
 
         const grapherUrls = $("iframe")
             .toArray()
-            .filter((el) => (el.attribs["src"] || "").match(/\/grapher\//))
-            .map((el) => el.attribs["src"].trim())
+            .filter((el) =>
+                ((el as cheerio.TagElement).attribs["src"] || "").match(
+                    /\/grapher\//
+                )
+            )
+            .map((el) => (el as cheerio.TagElement).attribs["src"].trim())
 
         // This can be slow if uncached!
         await bakeGrapherUrls(grapherUrls)
@@ -417,7 +421,7 @@ const renderPostThumbnailBySlug = async (
 }
 
 export const renderProminentLinks = async (
-    $: CheerioStatic,
+    $: cheerio.Selector,
     containerPostId: number
 ) => {
     const blocks = $("block[type='prominent-link']").toArray()
@@ -430,7 +434,7 @@ export const renderProminentLinks = async (
             const resolvedUrl = await resolveInternalRedirect(formattedUrl)
             const resolvedUrlString = resolvedUrl.fullUrl
 
-            const style = $block.attr("style")
+            const style = $block.attr("style") || null
             const content = $block.find("content").html()
 
             let title
@@ -634,8 +638,8 @@ export const renderKeyInsights = async (
 }
 
 export const extractKeyInsights = (
-    $: CheerioStatic,
-    $wrapper: Cheerio,
+    $: cheerio.Selector,
+    $wrapper: cheerio.Cheerio,
     containerPostId: number
 ): KeyInsight[] => {
     const keyInsights: KeyInsight[] = []

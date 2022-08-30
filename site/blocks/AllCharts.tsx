@@ -19,9 +19,9 @@ export const AllCharts = ({ post }: { post: FullPost }) => {
     )
 }
 
-export const renderAllCharts = (cheerioEl: CheerioStatic, post: FullPost) =>
+export const renderAllCharts = (cheerioEl: cheerio.Selector, post: FullPost) =>
     cheerioEl(`block[type='${WP_BlockType.AllCharts}']`).each(function (
-        this: CheerioElement
+        this: cheerio.Element
     ) {
         const $block = cheerioEl(this)
 

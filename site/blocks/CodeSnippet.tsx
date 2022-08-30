@@ -50,7 +50,7 @@ export const hydrateCodeSnippets = () => {
     })
 }
 
-export const renderCodeSnippets = ($: CheerioStatic) => {
+export const renderCodeSnippets = ($: cheerio.Selector) => {
     const codeSnippets = $("div.wp-code-snippet")
     codeSnippets.each((_, snippet) => {
         const $el = $(snippet)

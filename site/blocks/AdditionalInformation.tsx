@@ -123,9 +123,9 @@ const AdditionalInformation = ({
 
 export default AdditionalInformation
 
-export const renderAdditionalInformation = ($: CheerioStatic) => {
+export const renderAdditionalInformation = ($: cheerio.Selector) => {
     $("block[type='additional-information']").each(function (
-        this: CheerioElement
+        this: cheerio.Element
     ) {
         const $block = $(this)
         const variation = $block.find(".is-style-merge-left").length

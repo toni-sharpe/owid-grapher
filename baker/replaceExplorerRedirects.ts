@@ -6,16 +6,18 @@ import { getExplorerRedirectForPath } from "../explorerAdminServer/ExplorerRedir
 import { Url } from "../clientUtils/urls/Url.js"
 
 export const replaceIframesWithExplorerRedirectsInWordPressPost = (
-    cheerio: CheerioStatic
+    cheerio: cheerio.Selector
 ) =>
     cheerio("iframe")
         .toArray()
         .forEach((el) => {
-            const srcUrl = Url.fromURL(el.attribs["src"].trim())
+            const srcUrl = Url.fromURL(
+                (el as cheerio.TagElement).attribs["src"].trim()
+            )
             const resolvedUrl = resolveExplorerRedirect(srcUrl)
             if (srcUrl === resolvedUrl) return
 
-            el.attribs["src"] = resolvedUrl.fullUrl
+            ;(el as cheerio.TagElement).attribs["src"] = resolvedUrl.fullUrl
         })
 
 export const resolveExplorerRedirect = (url: Url): Url => {

@@ -59,12 +59,12 @@ export const formatDate = (date: Date) =>
     })
 
 export const splitContentIntoSectionsAndColumns = (
-    cheerioEl: CheerioStatic
+    cheerioEl: cheerio.Selector
 ) => {
     interface Columns {
-        wrapper: Cheerio
-        first: Cheerio
-        last: Cheerio
+        wrapper: cheerio.Cheerio
+        first: cheerio.Cheerio
+        last: cheerio.Cheerio
     }
 
     const getColumns = (
@@ -94,7 +94,7 @@ export const splitContentIntoSectionsAndColumns = (
             : false
     }
 
-    const isElementFlushingColumns = (el: CheerioElement): boolean => {
+    const isElementFlushingColumns = (el: cheerio.Element): boolean => {
         return (
             !el ||
             FullWidthHandler.isElementFullWidth(el) ||
@@ -111,12 +111,12 @@ export const splitContentIntoSectionsAndColumns = (
 
     interface ColumnsContext {
         columns: Columns
-        $section: Cheerio
+        $section: cheerio.Cheerio
     }
 
     interface Handler {
         setNext: (handler: Handler) => Handler
-        handle: (el: CheerioElement, context: ColumnsContext) => Columns | null
+        handle: (el: cheerio.Element, context: ColumnsContext) => Columns | null
     }
 
     abstract class AbstractHandler implements Handler {
@@ -127,18 +127,18 @@ export const splitContentIntoSectionsAndColumns = (
             return handler
         }
 
-        handle(el: CheerioElement, context: ColumnsContext) {
+        handle(el: cheerio.Element, context: ColumnsContext) {
             if (this.#nextHandler) return this.#nextHandler.handle(el, context)
             return null
         }
     }
 
     class FullWidthHandler extends AbstractHandler {
-        static isElementFullWidth(el: CheerioElement) {
+        static isElementFullWidth(el: cheerio.Element) {
             const $el = cheerioEl(el)
             return (
-                el.name === "h2" ||
-                el.name === "h3" ||
+                (el as cheerio.TagElement).name === "h2" ||
+                (el as cheerio.TagElement).name === "h3" ||
                 $el.hasClass("wp-block-columns") ||
                 $el.hasClass("wp-block-owid-grid") ||
                 $el.hasClass(WP_BlockClass.FullContentWidth) ||
@@ -154,7 +154,7 @@ export const splitContentIntoSectionsAndColumns = (
             )
         }
 
-        handle(el: CheerioElement, context: ColumnsContext) {
+        handle(el: cheerio.Element, context: ColumnsContext) {
             const $el = cheerioEl(el)
             if (FullWidthHandler.isElementFullWidth(el)) {
                 flushAndResetColumns(context)
@@ -166,7 +166,7 @@ export const splitContentIntoSectionsAndColumns = (
     }
 
     class KeyInsightsHandler extends AbstractHandler {
-        handle(el: CheerioElement, context: ColumnsContext) {
+        handle(el: cheerio.Element, context: ColumnsContext) {
             const $el = cheerioEl(el)
             if ($el.hasClass(`${KEY_INSIGHTS_CLASS_NAME}`)) {
                 flushAndResetColumns(context)
@@ -203,11 +203,11 @@ export const splitContentIntoSectionsAndColumns = (
     }
 
     class H4Handler extends AbstractHandler {
-        static isElementH4 = (el: CheerioElement): boolean => {
-            return el.name === "h4"
+        static isElementH4 = (el: cheerio.Element): boolean => {
+            return (el as cheerio.TagElement).name === "h4"
         }
 
-        handle(el: CheerioElement, context: ColumnsContext) {
+        handle(el: cheerio.Element, context: ColumnsContext) {
             const $el = cheerioEl(el)
             if (H4Handler.isElementH4(el)) {
                 flushAndResetColumns(context)
@@ -220,11 +220,11 @@ export const splitContentIntoSectionsAndColumns = (
     }
 
     class SideBySideHandler extends AbstractHandler {
-        handle(el: CheerioElement, context: ColumnsContext) {
+        handle(el: cheerio.Element, context: ColumnsContext) {
             const $el = cheerioEl(el)
 
             if (
-                el.name === "figure" &&
+                (el as cheerio.TagElement).name === "figure" &&
                 $el.hasClass(GRAPHER_PREVIEW_CLASS) &&
                 hasColumnsStyle(context.columns, WP_ColumnStyle.SideBySide)
             ) {
@@ -234,9 +234,10 @@ export const splitContentIntoSectionsAndColumns = (
             }
 
             if (
-                el.name === "figure" &&
+                (el as cheerio.TagElement).name === "figure" &&
                 $el.hasClass(GRAPHER_PREVIEW_CLASS) &&
-                el.nextSibling?.attribs?.class === GRAPHER_PREVIEW_CLASS
+                ((el as cheerio.TagElement).nextSibling as cheerio.TagElement)
+                    ?.attribs?.class === GRAPHER_PREVIEW_CLASS
             ) {
                 flushAndResetColumns(context)
                 context.columns = getColumns(WP_ColumnStyle.SideBySide)
@@ -249,11 +250,13 @@ export const splitContentIntoSectionsAndColumns = (
     }
 
     class StandaloneFigureHandler extends AbstractHandler {
-        handle(el: CheerioElement, context: ColumnsContext) {
+        handle(el: cheerio.Element, context: ColumnsContext) {
             const $el = cheerioEl(el)
             if (
                 FigureHandler.isFigure(el) &&
-                isElementFlushingColumns(el.nextSibling) &&
+                isElementFlushingColumns(
+                    (el as cheerio.TagElement).nextSibling
+                ) &&
                 isColumnsEmpty(context.columns)
             ) {
                 context.columns = getColumns(WP_ColumnStyle.StickyLeft)
@@ -266,20 +269,20 @@ export const splitContentIntoSectionsAndColumns = (
     }
 
     class FigureHandler extends AbstractHandler {
-        static isFigure(el: CheerioElement) {
+        static isFigure(el: cheerio.Element) {
             const $el = cheerioEl(el)
             return (
-                el.name === "figure" ||
-                el.name === "iframe" ||
+                (el as cheerio.TagElement).name === "figure" ||
+                (el as cheerio.TagElement).name === "iframe" ||
                 // Temporary support for old chart iframes
-                el.name === "address" ||
+                (el as cheerio.TagElement).name === "address" ||
                 $el.hasClass("wp-block-image") ||
                 $el.hasClass("tableContainer") ||
                 // Temporary support for non-Gutenberg iframes wrapped in wpautop's <p>
                 // Also catches older iframes (e.g. https://ourworldindata.org/food-per-person#world-map-of-minimum-and-average-dietary-energy-requirement-mder-and-ader)
                 $el.find("iframe").length !== 0 ||
                 // TODO: remove temporary support for pre-Gutenberg images and associated captions
-                el.name === "h6" ||
+                (el as cheerio.TagElement).name === "h6" ||
                 ($el.find("img").length !== 0 &&
                     !$el.hasClass(PROMINENT_LINK_CLASSNAME) &&
                     !$el.find(
@@ -288,7 +291,7 @@ export const splitContentIntoSectionsAndColumns = (
             )
         }
 
-        handle(el: CheerioElement, context: ColumnsContext) {
+        handle(el: cheerio.Element, context: ColumnsContext) {
             const $el = cheerioEl(el)
             if (FigureHandler.isFigure(el)) {
                 context.columns.last.append($el)
@@ -299,7 +302,7 @@ export const splitContentIntoSectionsAndColumns = (
     }
 
     class DefaultHandler extends AbstractHandler {
-        handle(el: CheerioElement, context: ColumnsContext) {
+        handle(el: cheerio.Element, context: ColumnsContext) {
             const $el = cheerioEl(el)
             // Move non-heading, non-image content to the left column
             context.columns.first.append($el)
@@ -348,11 +351,11 @@ export const splitContentIntoSectionsAndColumns = (
     }
 }
 
-export const getBodyHtml = (cheerioEl: CheerioStatic): string => {
+export const getBodyHtml = (cheerioEl: cheerio.Selector): string => {
     return cheerioEl("body").html() || ""
 }
 
-const addGlossaryToSections = (cheerioEl: CheerioStatic) => {
+const addGlossaryToSections = (cheerioEl: cheerio.Selector) => {
     // highlight glossary terms once per top-level section (ignore sub-sections
     // created by KeyInsightsHandler)
     const $sections = cheerioEl("body > section")
@@ -365,7 +368,7 @@ const addGlossaryToSections = (cheerioEl: CheerioStatic) => {
 }
 
 const addTocToSections = (
-    cheerioEl: CheerioStatic,
+    cheerioEl: cheerio.Root,
     tocHeadings: TocHeading[]
 ) => {
     cheerioEl("h2")
@@ -392,7 +395,7 @@ const addTocToSections = (
         })
 }
 
-const addPostHeader = (cheerioEl: CheerioStatic, post: FormattedPost) => {
+const addPostHeader = (cheerioEl: cheerio.Selector, post: FormattedPost) => {
     const publishedDate = formatDate(post.date)
     // const modifiedDate = formatDate(post.modifiedDate)
 
