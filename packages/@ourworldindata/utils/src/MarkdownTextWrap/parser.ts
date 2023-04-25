@@ -1,5 +1,5 @@
 import P from "parsimmon"
-
+import { detailOnDemandRegex } from "../GdocsUtils.js"
 // An AST inspired by MDAST
 // Deviates because we want to track individual words, whitespace, and newlines to use with MarkdownTextWrap and our SVG exporter
 
@@ -93,7 +93,6 @@ type DetailsOnDemandContent =
 
 interface DetailOnDemand {
     type: "detailOnDemand"
-    category: string
     term: string
     children: DetailsOnDemandContent[]
 }
@@ -326,7 +325,11 @@ const detailOnDemandContentParser: (
         r.nonBracketWord
     )
 
-export const detailOnDemandRegex = /\(hover::(\w+)::(\w+)\)/
+export function extractDetailsFromSyntax(str: string): string[] {
+    return [...str.matchAll(new RegExp(detailOnDemandRegex, "g"))].map(
+        ([_, term]) => term
+    )
+}
 
 const detailOnDemandParser: (r: MdParser) => P.Parser<DetailOnDemand> = (
     r: MdParser
@@ -338,14 +341,11 @@ const detailOnDemandParser: (r: MdParser) => P.Parser<DetailOnDemand> = (
     }>(
         P.string("["),
         ["children", r.detailOnDemandContent.atLeast(1)],
-        P.string("](hover::"),
-        ["category", r.dodCategory],
-        P.string("::"),
+        P.string("](#dod:"),
         ["term", r.dodTerm],
         P.string(")")
-    ).map(({ children, category, term }) => ({
+    ).map(({ children, term }) => ({
         type: "detailOnDemand",
-        category: category.value,
         term: term.value,
         children,
     }))

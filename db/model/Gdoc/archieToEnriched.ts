@@ -16,10 +16,11 @@ import {
     checkNodeIsSpan,
     convertHeadingTextToId,
     EnrichedBlockSimpleText,
+    EnrichedBlockText,
 } from "@ourworldindata/utils"
 import { parseRawBlocksToEnrichedBlocks } from "./rawToEnriched.js"
 import urlSlug from "url-slug"
-import { isObject } from "lodash"
+import { isObject, keyBy } from "lodash"
 import { getTitleSupertitleFromHeadingText } from "./gdocUtils.js"
 import {
     htmlToEnrichedTextBlock,
@@ -259,5 +260,16 @@ export const archieToEnriched = (text: string): OwidGdocContent => {
         .split(",")
         .map((author: string) => author.trim())
 
+    if (parsed.details) {
+        parsed.details = keyBy(
+            parsed.details.map(
+                (detail: any): { id: string; text: EnrichedBlockText[] } => ({
+                    id: detail.id,
+                    text: detail.text.map(parseRawBlocksToEnrichedBlocks),
+                })
+            ),
+            "id"
+        )
+    }
     return parsed
 }

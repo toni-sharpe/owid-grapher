@@ -29,11 +29,13 @@ import {
     OwidGdocErrorMessageType,
     NodeWithUrl,
     excludeNullish,
+    DetailDictionary,
 } from "@ourworldindata/utils"
 import {
     BAKED_GRAPHER_URL,
     GDOCS_CLIENT_EMAIL,
     GDOCS_CLIENT_ID,
+    GDOCS_DETAILS_ON_DEMAND_ID,
     GDOCS_PRIVATE_KEY,
 } from "../../../settings/serverSettings.js"
 import { google, Auth, docs_v1 } from "googleapis"
@@ -185,6 +187,22 @@ export class Gdoc extends BaseEntity implements OwidGdocInterface {
         )
 
         return [...filenames]
+    }
+
+    get details(): string[] {
+        const details: Set<string> = new Set()
+
+        this.content.body?.forEach((node) =>
+            recursivelyMapArticleContent(node, (item) => {
+                if (checkNodeIsSpan(item)) {
+                    if (item.spanType === "span-dod") {
+                        details.add(item.id)
+                    }
+                }
+                return item
+            })
+        )
+        return [...details]
     }
 
     async loadImageMetadata(): Promise<void> {
@@ -382,7 +400,34 @@ export class Gdoc extends BaseEntity implements OwidGdocInterface {
             },
             []
         )
-        this.errors = [...filenameErrors, ...linkErrors]
+
+        let dodErrors: OwidGdocErrorMessage[] = []
+        // Validating the DoD document is infinitely recursive :)
+        if (!GDOCS_DETAILS_ON_DEMAND_ID) {
+            console.error(
+                "GDOCS_DETAILS_ON_DEMAND_ID unset. Unable to validate dods"
+            )
+        } else if (this.id !== GDOCS_DETAILS_ON_DEMAND_ID) {
+            const details = await Gdoc.getDetailsOnDemandGdoc()
+            dodErrors = this.details.reduce(
+                (
+                    acc: OwidGdocErrorMessage[],
+                    detailId
+                ): OwidGdocErrorMessage[] => {
+                    if (details && !details[detailId]) {
+                        acc.push({
+                            type: OwidGdocErrorMessageType.Error,
+                            message: `Invalid DoD referenced: "${detailId}"`,
+                            property: "content",
+                        })
+                    }
+                    return acc
+                },
+                []
+            )
+        }
+
+        this.errors = [...filenameErrors, ...linkErrors, ...dodErrors]
     }
 
     static async getGdocFromContentSource(
@@ -410,6 +455,17 @@ export class Gdoc extends BaseEntity implements OwidGdocInterface {
         await gdoc.validate(publishedExplorersBySlug)
 
         return gdoc
+    }
+
+    static async getDetailsOnDemandGdoc(): Promise<
+        DetailDictionary | undefined
+    > {
+        const gdoc = await Gdoc.getGdocFromContentSource(
+            GDOCS_DETAILS_ON_DEMAND_ID,
+            {}
+        )
+
+        return gdoc.content.details
     }
 
     static async getPublishedGdocs(): Promise<Gdoc[]> {

@@ -424,6 +424,12 @@ export type SpanRef = {
     url: string
 }
 
+export type SpanDod = {
+    spanType: "span-dod"
+    children: Span[]
+    id: string
+}
+
 export type SpanNewline = {
     spanType: "span-newline"
 }
@@ -461,6 +467,7 @@ export type UnformattedSpan = SpanSimpleText | SpanNewline
 
 export type Span =
     | SpanSimpleText
+    | SpanDod
     | SpanLink
     | SpanRef
     | SpanNewline
@@ -1064,6 +1071,7 @@ export interface OwidGdocContent {
         | "sdg-color-17"
     "featured-image"?: any
     "sticky-nav"?: []
+    details?: DetailDictionary
 }
 
 export type OwidGdocStickyNavItem = { target: string; text: string }
@@ -1090,12 +1098,11 @@ export enum SiteFooterContext {
 }
 
 export interface Detail {
-    category: string
-    term: string
-    title: string
-    content: string
-    id: number
+    id: string
+    text: EnrichedBlockText[]
 }
+
+export type DetailDictionary = Record<string, Detail>
 
 /**
  * An unbounded value (±Infinity) or a concrete point in time (year or date).

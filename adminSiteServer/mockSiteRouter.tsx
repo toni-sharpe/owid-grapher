@@ -21,6 +21,7 @@ import {
     WORDPRESS_DIR,
     BASE_DIR,
     BAKED_SITE_DIR,
+    GDOCS_DETAILS_ON_DEMAND_ID,
 } from "../settings/serverSettings.js"
 
 import { expectInt, renderToHtmlPage } from "../serverUtils/serverUtil.js"
@@ -43,6 +44,7 @@ import { getExplorerRedirectForPath } from "../explorerAdminServer/ExplorerRedir
 import { explorerUrlMigrationsById } from "../explorer/urlMigrations/ExplorerUrlMigrations.js"
 import { generateEmbedSnippet } from "../site/viteUtils.js"
 import { renderDataPageOrGrapherPage } from "../baker/GrapherBaker.js"
+import { Gdoc } from "../db/model/Gdoc/Gdoc.js"
 
 require("express-async-errors")
 
@@ -219,6 +221,18 @@ mockSiteRouter.get("/multiEmbedderTest", async (req, res) =>
         )
     )
 )
+
+mockSiteRouter.get("/dods.json", async (_, res) => {
+    if (!GDOCS_DETAILS_ON_DEMAND_ID) {
+        console.error(
+            "GDOCS_DETAILS_ON_DEMAND_ID not set. Unable to generate dods.json"
+        )
+        res.send([])
+    } else {
+        const details = await Gdoc.getDetailsOnDemandGdoc()
+        res.send(details)
+    }
+})
 
 mockSiteRouter.get("/*", async (req, res) => {
     const slug = req.path.replace(/^\//, "").replace("/", "__")
