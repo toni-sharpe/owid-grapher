@@ -532,7 +532,8 @@ export type RawBlockScroller = {
 }
 
 export type EnrichedScrollerItem = {
-    url: string // TODO: should this be transformed into an EnrichedBlockChart?
+    type: "enriched-scroller-item"
+    url: string
     text: EnrichedBlockText
 }
 
@@ -635,31 +636,27 @@ export type EnrichedBlockHorizontalRule = {
     value?: Record<string, never> // dummy value to unify block shapes
 } & EnrichedBlockWithParseErrors
 
-export type RawRecircItem = {
-    article?: string
-    author?: string
+export type RawRecircLink = {
     url?: string
 }
 
-export type RawBlockRecircValue = {
-    title?: string
-    list?: RawRecircItem[]
-}
 export type RawBlockRecirc = {
     type: "recirc"
-    value: RawBlockRecircValue[] | ArchieMLUnexpectedNonObjectValue
+    value?: {
+        title?: string
+        links?: RawRecircLink[]
+    }
 }
 
-export type EnrichedRecircItem = {
-    article: SpanSimpleText
-    author: SpanSimpleText
+export type EnrichedRecircLink = {
     url: string
+    type: "recirc-link"
 }
 
 export type EnrichedBlockRecirc = {
     type: "recirc"
     title: SpanSimpleText
-    items: EnrichedRecircItem[]
+    links: EnrichedRecircLink[]
 } & EnrichedBlockWithParseErrors
 
 export type RawBlockText = {
@@ -818,6 +815,44 @@ export type EnrichedBlockCallout = {
     text: Span[][]
 } & EnrichedBlockWithParseErrors
 
+export type RawBlockTopicPageIntro = {
+    type: "topic-page-intro"
+    value: {
+        "download-button":
+            | {
+                  text: string
+                  url: string
+              }
+            | undefined
+        "related-topics":
+            | {
+                  text?: string
+                  url: string
+              }[]
+            | undefined
+        content: RawBlockText[]
+    }
+}
+
+export type EnrichedTopicPageIntroRelatedTopic = {
+    text?: string
+    url: string
+    type: "topic-page-intro-related-topic"
+}
+
+export type EnrichedTopicPageIntroDownloadButton = {
+    text: string
+    url: string
+    type: "topic-page-intro-download-button"
+}
+
+export type EnrichedBlockTopicPageIntro = {
+    type: "topic-page-intro"
+    downloadButton?: EnrichedTopicPageIntroDownloadButton
+    relatedTopics?: EnrichedTopicPageIntroRelatedTopic[]
+    content: EnrichedBlockText[]
+} & EnrichedBlockWithParseErrors
+
 export type RawBlockSDGToc = {
     type: "sdg-toc"
     value?: Record<string, never>
@@ -874,6 +909,7 @@ export type OwidRawGdocBlock =
     | RawBlockMissingData
     | RawBlockAdditionalCharts
     | RawBlockNumberedList
+    | RawBlockTopicPageIntro
 
 export type OwidEnrichedGdocBlock =
     | EnrichedBlockText
@@ -900,6 +936,7 @@ export type OwidEnrichedGdocBlock =
     | EnrichedBlockAdditionalCharts
     | EnrichedBlockNumberedList
     | EnrichedBlockSimpleText
+    | EnrichedBlockTopicPageIntro
 
 export enum OwidGdocPublicationContext {
     unlisted = "unlisted",
@@ -998,8 +1035,7 @@ export interface OwidGdocContent {
     title?: string
     supertitle?: string
     subtitle?: string
-    template?: string
-    byline?: string
+    authors: string[]
     dateline?: string
     excerpt?: string
     cover?: string
@@ -1027,12 +1063,14 @@ export interface OwidGdocContent {
         | "sdg-color-16"
         | "sdg-color-17"
     "featured-image"?: any
+    "sticky-nav"?: []
 }
+
+export type OwidGdocStickyNavItem = { target: string; text: string }
 
 export interface OwidGdocContentPublished extends OwidGdocContent {
     body: OwidEnrichedGdocBlock[]
     title: string
-    byline: string
     excerpt: string
 }
 

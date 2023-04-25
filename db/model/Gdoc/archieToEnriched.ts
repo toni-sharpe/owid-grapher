@@ -10,6 +10,12 @@ import {
     isArray,
     get,
     RawBlockList,
+    recursivelyMapArticleContent,
+    OwidGdocStickyNavItem,
+    OwidGdocType,
+    checkNodeIsSpan,
+    convertHeadingTextToId,
+    EnrichedBlockSimpleText,
 } from "@ourworldindata/utils"
 import { parseRawBlocksToEnrichedBlocks } from "./rawToEnriched.js"
 import urlSlug from "url-slug"
@@ -19,6 +25,76 @@ import {
     htmlToEnrichedTextBlock,
     htmlToSimpleTextBlock,
 } from "./htmlToEnriched.js"
+
+// Topic page headings have predictable heading names which are used in the sticky nav.
+// If the user hasn't explicitly defined a sticky-nav in archie to map nav items to headings,
+// we can try to do it for them by looking for substring matches in the headings that they've written
+function generateStickyNav(
+    content: OwidGdocContent
+): OwidGdocStickyNavItem[] | undefined {
+    if (content.type !== OwidGdocType.TopicPage) return
+    // If a sticky nav has been explicitly defined, use that.
+    if (content["sticky-nav"]) return content["sticky-nav"]
+    // These are the default headings that we'll try to find and create sticky nav headings for
+    // Even if the id for the heading is "key-insights-on-poverty", we can just do substring matches
+    const headingToIdMap = {
+        ["key-insights"]: "Key Insights",
+        ["explore"]: "Data Explorer",
+        ["research-writing"]: "Research & Writing",
+        ["endnotes"]: "Endnotes",
+        ["citation"]: "Cite This Work",
+        ["license"]: "Reuse This Work",
+    }
+    const stickyNavItems: OwidGdocStickyNavItem[] = [
+        {
+            // The introduction block should always exist for topic pages
+            text: "Introduction",
+            target: "#introduction",
+        },
+    ]
+
+    content.body?.map((node) =>
+        recursivelyMapArticleContent(node, (node) => {
+            if (checkNodeIsSpan(node)) return node
+            if (node.type === "heading") {
+                const headingId = convertHeadingTextToId(node.text)
+                for (const [substring, title] of Object.entries(
+                    headingToIdMap
+                )) {
+                    if (headingId.includes(substring)) {
+                        stickyNavItems.push({
+                            text: title,
+                            target: `#${headingId}`,
+                        })
+                    }
+                }
+            }
+            return node
+        })
+    )
+
+    stickyNavItems.push(
+        ...[
+            {
+                text: "Cite this work",
+                target: "#article-citation",
+            },
+            {
+                text: "Reuse this work",
+                target: "#article-licence",
+            },
+        ]
+    )
+    return stickyNavItems
+}
+
+function formatCitation(
+    rawCitation?: string | string[]
+): undefined | EnrichedBlockSimpleText[] {
+    if (!rawCitation) return
+    const citationArray = isArray(rawCitation) ? rawCitation : [rawCitation]
+    return citationArray.map(htmlToSimpleTextBlock)
+}
 
 export const archieToEnriched = (text: string): OwidGdocContent => {
     const refs = (text.match(/{ref}(.*?){\/ref}/gims) || []).map(function (
@@ -163,19 +239,25 @@ export const archieToEnriched = (text: string): OwidGdocContent => {
 
     // Parse elements of the ArchieML into enrichedBlocks
     parsed.body = compact(parsed.body.map(parseRawBlocksToEnrichedBlocks))
+
     parsed.refs = refs.map(htmlToEnrichedTextBlock)
-    const summary: RawBlockText[] | undefined = parsed.summary
-    parsed.summary =
-        summary === undefined
-            ? undefined
-            : summary.map((html) => htmlToEnrichedTextBlock(html.value))
-    const citation: string | string[] | undefined = parsed.citation
-    parsed.citation =
-        citation === undefined
-            ? undefined
-            : typeof citation === "string"
-            ? htmlToSimpleTextBlock(citation)
-            : citation.map(htmlToSimpleTextBlock)
+
+    parsed.summary = parsed.summary?.map((html: RawBlockText) =>
+        htmlToEnrichedTextBlock(html.value)
+    )
+
+    parsed.citation = formatCitation(parsed.citation)
+
     parsed.toc = toc
+
+    parsed["sticky-nav"] = generateStickyNav(parsed)
+
+    // this property was originally named byline even though it was a comma-separated list of authors
+    // once this has been deployed for a while and we've migrated the property name in all gdocs,
+    // we can remove this parsed.byline vestige
+    parsed.authors = (parsed.byline || parsed.authors || "Our World In Data")
+        .split(",")
+        .map((author: string) => author.trim())
+
     return parsed
 }

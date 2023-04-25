@@ -15,6 +15,7 @@ import {
     spansToUnformattedPlainText,
     TocHeadingWithTitleSupertitle,
     Url,
+    convertHeadingTextToId,
 } from "@ourworldindata/utils"
 import SDGGrid from "./SDGGrid.js"
 import { BlockErrorBoundary, BlockErrorFallback } from "./BlockErrorBoundary.js"
@@ -26,6 +27,7 @@ import urlSlug from "url-slug"
 import { MissingData } from "./MissingData.js"
 import { AdditionalCharts } from "./AdditionalCharts.js"
 import { ProminentLink } from "./ProminentLink.js"
+import { TopicPageIntro } from "./TopicPageIntro.js"
 
 export type Container =
     | "default"
@@ -74,6 +76,7 @@ const layouts: { [key in Container]: Layouts} = {
         ["sticky-right-right-column"]: "span-cols-7 span-md-cols-12",
         ["sticky-right"]: "grid span-cols-12 col-start-2",
         ["text"]: "col-start-5 span-cols-6 col-md-start-3 span-md-cols-10 span-sm-cols-12 col-sm-start-2",
+        ["topic-page-intro"]: "grid col-start-2 span-cols-12",
     },
     ["datapage"]: {
         ["default"]: "col-start-2 span-cols-6",
@@ -248,7 +251,7 @@ export default function ArticleBlock({
                     "h1-semibold",
                     getLayout("heading", containerType)
                 )}
-                id={urlSlug(spansToUnformattedPlainText(block.text))}
+                id={convertHeadingTextToId(block.text)}
             >
                 {renderSpans(block.text)}
             </h1>
@@ -262,7 +265,7 @@ export default function ArticleBlock({
                           supertitle
                       )}-${spansToUnformattedPlainText(text)}`
                   )
-                : urlSlug(spansToUnformattedPlainText(block.text))
+                : convertHeadingTextToId(block.text)
 
             return (
                 <>
@@ -299,7 +302,7 @@ export default function ArticleBlock({
                           supertitle
                       )}-${spansToUnformattedPlainText(text)}`
                   )
-                : urlSlug(spansToUnformattedPlainText(block.text))
+                : convertHeadingTextToId(block.text)
             return (
                 <h3
                     className={cx(
@@ -328,7 +331,7 @@ export default function ArticleBlock({
                     "h4-semibold",
                     getLayout("heading", containerType)
                 )}
-                id={urlSlug(spansToUnformattedPlainText(block.text))}
+                id={convertHeadingTextToId(block.text)}
             >
                 {renderSpans(block.text)}
             </h4>
@@ -339,7 +342,7 @@ export default function ArticleBlock({
                     "overline-black-caps",
                     getLayout("heading", containerType)
                 )}
-                id={urlSlug(spansToUnformattedPlainText(block.text))}
+                id={convertHeadingTextToId(block.text)}
             >
                 {renderSpans(block.text)}
             </h5>
@@ -355,7 +358,9 @@ export default function ArticleBlock({
                 dangerouslySetInnerHTML={{ __html: block.value }}
             />
         ))
-        .with({ type: "horizontal-rule" }, () => <hr></hr>)
+        .with({ type: "horizontal-rule" }, () => (
+            <hr className={getLayout("horizontal-rule", containerType)} />
+        ))
         .with({ type: "sdg-grid" }, (block) => (
             <SDGGrid
                 className={getLayout("sdg-grid", containerType)}
@@ -480,6 +485,12 @@ export default function ArticleBlock({
             <AdditionalCharts // bla
                 items={block.items}
                 className={getLayout("additional-charts", containerType)}
+            />
+        ))
+        .with({ type: "topic-page-intro" }, (block) => (
+            <TopicPageIntro
+                {...block}
+                className={getLayout("topic-page-intro", containerType)}
             />
         ))
         .exhaustive()

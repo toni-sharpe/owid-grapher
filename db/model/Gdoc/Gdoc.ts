@@ -18,17 +18,17 @@ import {
     JsonError,
     checkNodeIsSpan,
     spansToUnformattedPlainText,
-    Span,
     getUrlTarget,
     getLinkType,
     keyBy,
     excludeNull,
-    OwidEnrichedGdocBlock,
     recursivelyMapArticleContent,
     ImageMetadata,
     excludeUndefined,
     OwidGdocErrorMessage,
     OwidGdocErrorMessageType,
+    NodeWithUrl,
+    excludeNullish,
 } from "@ourworldindata/utils"
 import {
     BAKED_GRAPHER_URL,
@@ -42,7 +42,6 @@ import { archieToEnriched } from "./archieToEnriched.js"
 import { Link } from "../Link.js"
 import { imageStore } from "../Image.js"
 import { Chart } from "../Chart.js"
-import { excludeNullish } from "@ourworldindata/utils/dist/Util.js"
 import {
     BAKED_BASE_URL,
     BAKED_GRAPHER_EXPORTS_BASE_URL,
@@ -97,7 +96,9 @@ export class Gdoc extends BaseEntity implements OwidGdocInterface {
         if (id) {
             this.id = id
         }
-        this.content = {}
+        this.content = {
+            authors: ["Our World In Data"],
+        }
     }
     static table = "posts_gdocs"
     static cachedGoogleReadonlyAuth?: Auth.GoogleAuth
@@ -284,10 +285,9 @@ export class Gdoc extends BaseEntity implements OwidGdocInterface {
         return links
     }
 
-    // If the node has a URL in it, create a Link object
     // Assumes that the property will be named "url"
-    extractLinkFromNode(node: OwidEnrichedGdocBlock | Span): Link | void {
-        function getText(node: OwidEnrichedGdocBlock | Span): string {
+    extractLinkFromNode(node: NodeWithUrl): Link | void {
+        function getText(node: NodeWithUrl): string {
             // Can add component-specific text accessors here
             if (checkNodeIsSpan(node)) {
                 if (node.spanType === "span-link") {
@@ -382,7 +382,6 @@ export class Gdoc extends BaseEntity implements OwidGdocInterface {
             },
             []
         )
-
         this.errors = [...filenameErrors, ...linkErrors]
     }
 

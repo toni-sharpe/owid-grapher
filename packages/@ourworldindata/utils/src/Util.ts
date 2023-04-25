@@ -153,6 +153,10 @@ import {
     OwidEnrichedGdocBlock,
     Span,
     OwidGdocType,
+    EnrichedRecircLink,
+    EnrichedTopicPageIntroRelatedTopic,
+    EnrichedTopicPageIntroDownloadButton,
+    EnrichedScrollerItem,
 } from "./owidTypes.js"
 import { PointVector } from "./PointVector.js"
 import React from "react"
@@ -1348,12 +1352,21 @@ export const imemo = <Type>(
     }
 }
 
-export function recursivelyMapArticleContent<
-    Node extends OwidEnrichedGdocBlock | Span
->(
-    node: Node,
-    callback: <Child extends OwidEnrichedGdocBlock | Span>(node: Child) => Child
-): Node {
+// These are all the types that we need to be able to iterate through to extract their URLs.
+// It's more than just the EnrichedBlocks and Spans, because some EnrichedBlocks have nested children
+// that contain URLs
+export type NodeWithUrl =
+    | OwidEnrichedGdocBlock
+    | Span
+    | EnrichedRecircLink
+    | EnrichedTopicPageIntroRelatedTopic
+    | EnrichedTopicPageIntroDownloadButton
+    | EnrichedScrollerItem
+
+export function recursivelyMapArticleContent(
+    node: NodeWithUrl,
+    callback: (node: NodeWithUrl) => NodeWithUrl
+): NodeWithUrl {
     if (checkNodeIsSpan(node)) {
         if ("children" in node) {
             node.children.map((node) =>
@@ -1370,9 +1383,7 @@ export function recursivelyMapArticleContent<
         node.left.map((node) => recursivelyMapArticleContent(node, callback))
         node.right.map((node) => recursivelyMapArticleContent(node, callback))
     } else if (node.type === "text") {
-        node.value.map((node) =>
-            recursivelyMapArticleContent(node as any, callback)
-        )
+        node.value.map((node) => recursivelyMapArticleContent(node, callback))
     } else if (node.type === "additional-charts") {
         node.items.map((spans) =>
             spans.map((span) => recursivelyMapArticleContent(span, callback))
@@ -1381,14 +1392,21 @@ export function recursivelyMapArticleContent<
         node.items.map((item) =>
             recursivelyMapArticleContent(item.chart, callback)
         )
+    } else if (node.type === "recirc") {
+        node.links.map((link) => callback(link))
+    } else if (node.type === "topic-page-intro") {
+        const { downloadButton, relatedTopics, content } = node
+        if (downloadButton) callback(downloadButton)
+        if (relatedTopics) relatedTopics.forEach(callback)
+        content.forEach(callback)
+    } else if (node.type === "scroller") {
+        node.blocks.forEach(callback)
     }
 
     return callback(node)
 }
 
-export function checkNodeIsSpan(
-    node: OwidEnrichedGdocBlock | Span
-): node is Span {
+export function checkNodeIsSpan(node: NodeWithUrl): node is Span {
     return "spanType" in node
 }
 

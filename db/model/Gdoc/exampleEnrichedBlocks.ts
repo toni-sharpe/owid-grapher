@@ -81,6 +81,7 @@ export const enrichedBlockExamples: Record<
             {
                 url: "https://ourworldindata.org/grapher/total-cases-covid-19",
                 text: enrichedBlockText,
+                type: "enriched-scroller-item",
             },
         ],
         parseErrors: [],
@@ -150,11 +151,10 @@ export const enrichedBlockExamples: Record<
     recirc: {
         type: "recirc",
         title: spanSimpleText,
-        items: [
+        links: [
             {
-                article: spanSimpleText,
-                author: spanSimpleText,
-                url: "https://ourworldindata.org/grapher/total-cases-covid-19",
+                url: "https://docs.google.com/document/d/abcd-1234/edit",
+                type: "recirc-link",
             },
         ],
         parseErrors: [],
@@ -220,6 +220,44 @@ export const enrichedBlockExamples: Record<
     "missing-data": {
         type: "missing-data",
         value: {},
+        parseErrors: [],
+    },
+    "topic-page-intro": {
+        type: "topic-page-intro",
+        downloadButton: {
+            text: "Download all data on poverty",
+            url: "https://github.com/owid/etl",
+            type: "topic-page-intro-download-button",
+        },
+        relatedTopics: [
+            {
+                text: "Poverty",
+                url: "https://ourworldindata.org/poverty",
+                type: "topic-page-intro-related-topic",
+            },
+        ],
+        content: [
+            {
+                type: "text",
+                parseErrors: [],
+                value: [
+                    {
+                        spanType: "span-simple-text",
+                        text: "I am the first paragraph of the intro to the topic page.",
+                    },
+                ],
+            },
+            {
+                type: "text",
+                parseErrors: [],
+                value: [
+                    {
+                        spanType: "span-simple-text",
+                        text: "I am the second paragraph of the intro to the topic page.",
+                    },
+                ],
+            },
+        ],
         parseErrors: [],
     },
 }
