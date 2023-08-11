@@ -35,6 +35,7 @@ import {
     RelatedChart,
     BreadcrumbItem,
     uniq,
+    EnrichedBlockText,
 } from "@ourworldindata/utils"
 import {
     BAKED_GRAPHER_URL,
@@ -109,8 +110,6 @@ export class Gdoc extends BaseEntity implements OwidGdocInterface {
 
     constructor(id?: string) {
         super()
-        // TODO: the class is re-initializing every single auto-reload
-        // Implement Page Visibility API ?
         if (id) {
             this.id = id
         }
@@ -183,6 +182,32 @@ export class Gdoc extends BaseEntity implements OwidGdocInterface {
 
         // Convert the ArchieML to our enriched JSON structure
         this.content = archieToEnriched(text)
+
+        if (this.details.length) {
+            const { details } = await Gdoc.getDetailsOnDemandGdoc()
+            const blocksToTraverse: EnrichedBlockText[] = []
+            Object.values(details).map((detail) => {
+                blocksToTraverse.push(...detail.text)
+            })
+            const detailLinks: Link[] = []
+            blocksToTraverse.forEach((block) =>
+                traverseEnrichedBlocks(
+                    block,
+                    (child) => {
+                        const childLinks = this.extractLinksFromNode(child)
+                        if (childLinks) detailLinks.push(...childLinks)
+                    },
+                    (span) => {
+                        traverseEnrichedSpan(span, (child) => {
+                            const childLink = this.extractLinkFromSpan(child)
+                            if (childLink) detailLinks.push(childLink)
+                        })
+                    }
+                )
+            )
+
+            console.log("detailLinks", detailLinks)
+        }
     }
 
     get filenames(): string[] {
@@ -426,7 +451,7 @@ export class Gdoc extends BaseEntity implements OwidGdocInterface {
         }
     }
 
-    extractLinksFromNode(node: OwidEnrichedGdocBlock): Link[] | void {
+    extractLinksFromNode(node: OwidEnrichedGdocBlock): Link[] | undefined {
         const links: Link[] = match(node)
             .with({ type: "prominent-link" }, (node) => [
                 Link.createFromUrl({
