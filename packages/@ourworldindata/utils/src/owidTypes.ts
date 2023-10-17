@@ -1001,7 +1001,7 @@ export type EnrichedBlockKeyInsightsSlide = {
 
 export type EnrichedBlockKeyInsights = {
     type: "key-insights"
-    heading: string
+    heading: Span[]
     insights: EnrichedBlockKeyInsightsSlide[]
 } & EnrichedBlockWithParseErrors
 

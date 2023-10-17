@@ -302,7 +302,9 @@ export const enrichedBlockExamples: Record<
     },
     "key-insights": {
         type: "key-insights",
-        heading: "Key Insights on Poverty",
+        heading: [
+            { spanType: "span-simple-text", text: "Key Insights on Poverty" },
+        ],
         insights: [
             {
                 title: "Key insight number 1",

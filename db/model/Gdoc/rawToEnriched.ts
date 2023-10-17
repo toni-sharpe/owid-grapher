@@ -1181,7 +1181,7 @@ function parseKeyInsights(raw: RawBlockKeyInsights): EnrichedBlockKeyInsights {
     const createError = (error: ParseError): EnrichedBlockKeyInsights => ({
         type: "key-insights",
         parseErrors: [error],
-        heading: "",
+        heading: [],
         insights: [],
     })
 
@@ -1255,7 +1255,7 @@ function parseKeyInsights(raw: RawBlockKeyInsights): EnrichedBlockKeyInsights {
 
     return {
         type: "key-insights",
-        heading: raw.value.heading,
+        heading: htmlToSpans(raw.value.heading),
         insights: enrichedInsights,
         parseErrors: [...enrichedInsightParseErrors],
     }

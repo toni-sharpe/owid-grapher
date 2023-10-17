@@ -4,6 +4,7 @@ import {
     EnrichedBlockKeyInsightsSlide,
     slugify,
     KEY_INSIGHTS_ID,
+    Span,
 } from "@ourworldindata/utils"
 import {
     KEY_INSIGHTS_CLASS_NAME,
@@ -15,11 +16,12 @@ import {
 import { ArticleBlocks } from "./ArticleBlocks.js"
 import Image from "./Image.js"
 import Chart from "./Chart.js"
+import { renderSpans } from "./utils.js"
 
 type KeyInsightsProps = {
     className?: string
     insights: EnrichedBlockKeyInsightsSlide[]
-    heading: string
+    heading: Span[]
 }
 
 export const KeyInsights = ({
@@ -54,7 +56,7 @@ export const KeyInsights = ({
                 className="article-block__heading h1-semibold"
                 id={KEY_INSIGHTS_ID}
             >
-                {heading}
+                {renderSpans(heading)}
                 <a className="deep-link" href={`#${KEY_INSIGHTS_ID}`} />
             </h1>
             <div className={KEY_INSIGHTS_CLASS_NAME}>
