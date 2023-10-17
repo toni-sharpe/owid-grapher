@@ -5,6 +5,7 @@ import {
     slugify,
     KEY_INSIGHTS_ID,
     Span,
+    spansToUnformattedPlainText,
 } from "@ourworldindata/utils"
 import {
     KEY_INSIGHTS_CLASS_NAME,
@@ -80,8 +81,14 @@ export const KeyInsights = ({
                                     >
                                         <div className="grid span-cols-12">
                                             <div className="article-block__key-insights-content-column span-cols-5 span-md-cols-12">
-                                                <h4 id={slugify(title)}>
-                                                    {title}
+                                                <h4
+                                                    id={slugify(
+                                                        spansToUnformattedPlainText(
+                                                            title
+                                                        )
+                                                    )}
+                                                >
+                                                    {renderSpans(title)}
                                                 </h4>
                                                 <div
                                                     className={

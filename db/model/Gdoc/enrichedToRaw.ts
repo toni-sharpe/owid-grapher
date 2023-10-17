@@ -337,7 +337,7 @@ export function enrichedBlockToRawBlock(
                 value: {
                     heading: spansToHtmlText(b.heading),
                     insights: b.insights.map((insight) => ({
-                        title: insight.title,
+                        title: spansToHtmlText(insight.title),
                         filename: insight.filename,
                         url: insight.url,
                         content: insight.content?.map((content) =>

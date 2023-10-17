@@ -993,7 +993,7 @@ export type RawBlockKeyInsights = {
 
 export type EnrichedBlockKeyInsightsSlide = {
     type: "key-insight-slide"
-    title: string
+    title: Span[]
     filename?: string
     url?: string
     content: OwidEnrichedGdocBlock[]

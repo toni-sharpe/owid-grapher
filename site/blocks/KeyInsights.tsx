@@ -3,7 +3,13 @@ import ReactDOM from "react-dom"
 import { ScrollMenu, VisibilityContext } from "react-horizontal-scrolling-menu"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome/index.js"
 import { faAngleRight } from "@fortawesome/free-solid-svg-icons"
-import { KeyInsight, getWindowUrl, setWindowUrl } from "@ourworldindata/utils"
+import {
+    KeyInsight,
+    Span,
+    getWindowUrl,
+    setWindowUrl,
+} from "@ourworldindata/utils"
+import { renderSpans } from "../gdocs/utils.js"
 
 export const KEY_INSIGHTS_CLASS_NAME = "wp-block-owid-key-insights"
 export const KEY_INSIGHTS_INSIGHT_PARAM = "insight"
@@ -20,7 +26,7 @@ const Thumb = ({
     onClick,
     selected,
 }: {
-    title: string
+    title: string | Span[]
     onClick: () => void
     itemId: string // needed by react-horizontal-scrolling-menu, see lib's examples
     selected: boolean
@@ -32,7 +38,8 @@ const Thumb = ({
             aria-selected={selected}
             className={KEY_INSIGHTS_THUMB_CLASS_NAME}
         >
-            {title}
+            {/* Support spans so that we can write subscript characters */}
+            {typeof title === "string" ? title : renderSpans(title)}
         </button>
     )
 }
@@ -47,7 +54,11 @@ const Thumb = ({
  * accessibility practices for this kind of widget is available at
  * https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/tab_role
  */
-export const KeyInsightsThumbs = ({ titles }: { titles: string[] }) => {
+export const KeyInsightsThumbs = ({
+    titles,
+}: {
+    titles: string[] | Span[][]
+}) => {
     const [selectedId, setSelectedId] = useState<string>("0")
     const [slides, setSlides] = useState<HTMLElement | null>(null)
     const [slug, setSlug] = useState<string>("")

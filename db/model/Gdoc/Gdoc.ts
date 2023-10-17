@@ -565,7 +565,7 @@ export class Gdoc extends BaseEntity implements OwidGdocInterface {
                             url: insight.url,
                             source: this,
                             componentType: node.type,
-                            text: insight.title,
+                            text: spansToSimpleString(insight.title),
                         })
                         links.push(insightLink)
                     }

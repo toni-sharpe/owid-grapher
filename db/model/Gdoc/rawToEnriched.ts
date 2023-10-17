@@ -1240,7 +1240,7 @@ function parseKeyInsights(raw: RawBlockKeyInsights): EnrichedBlockKeyInsights {
         if (rawInsight.title) {
             const enrichedInsight: EnrichedBlockKeyInsightsSlide = {
                 type: "key-insight-slide",
-                title: rawInsight.title,
+                title: htmlToSpans(rawInsight.title),
                 content: enrichedContent,
             }
             if (url.fullUrl) {

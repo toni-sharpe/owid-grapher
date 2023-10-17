@@ -307,7 +307,12 @@ export const enrichedBlockExamples: Record<
         ],
         insights: [
             {
-                title: "Key insight number 1",
+                title: [
+                    {
+                        spanType: "span-simple-text",
+                        text: "Key insight number 1",
+                    },
+                ],
                 type: "key-insight-slide",
                 filename: "static_chart.svg",
                 content: [
@@ -334,7 +339,16 @@ export const enrichedBlockExamples: Record<
                 ],
             },
             {
-                title: "Key insight number 2",
+                title: [
+                    {
+                        spanType: "span-simple-text",
+                        text: "Key insight number",
+                    },
+                    {
+                        spanType: "span-subscript",
+                        children: [{ spanType: "span-simple-text", text: "2" }],
+                    },
+                ],
                 type: "key-insight-slide",
                 url: "https://ourworldindata.org/grapher/some_grapher",
                 content: [
