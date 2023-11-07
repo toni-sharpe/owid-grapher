@@ -5,7 +5,7 @@ import {
     SelectionArray,
 } from "@ourworldindata/grapher"
 import React from "react"
-import ReactDOMServer from "react-dom/server.js"
+import ReactDOMServer from "react-dom/server"
 import { ENV } from "../settings/serverSettings.js"
 
 export const bakeGlobalEntitySelector = (cheerioEl: CheerioStatic) => {

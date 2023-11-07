@@ -1,5 +1,5 @@
 import React from "react"
-import ReactDOMServer from "react-dom/server.js"
+import ReactDOMServer from "react-dom/server"
 import { FullPost, WP_BlockClass, WP_BlockType } from "@ourworldindata/utils"
 import { RelatedCharts } from "./RelatedCharts.js"
 

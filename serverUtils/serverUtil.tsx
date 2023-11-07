@@ -1,4 +1,4 @@
-import ReactDOMServer from "react-dom/server.js"
+import ReactDOMServer from "react-dom/server"
 import * as lodash from "lodash"
 import { JsonError } from "@ourworldindata/utils"
 

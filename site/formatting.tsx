@@ -1,7 +1,7 @@
 import cheerio from "cheerio"
 import React from "react"
 import * as lodash from "lodash"
-import ReactDOMServer from "react-dom/server.js"
+import ReactDOMServer from "react-dom/server"
 import {
     FormattedPost,
     FormattingOptions,

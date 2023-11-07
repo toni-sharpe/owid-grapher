@@ -2,7 +2,7 @@ import React from "react"
 import { tippy } from "@tippyjs/react"
 import { Instance } from "tippy.js"
 import { BAKED_BASE_URL } from "../settings/clientSettings.js"
-import { renderToStaticMarkup } from "react-dom/server.js"
+import { renderToStaticMarkup } from "react-dom/server"
 import { ArticleBlocks } from "./gdocs/ArticleBlocks.js"
 import { DetailDictionary } from "@ourworldindata/utils"
 

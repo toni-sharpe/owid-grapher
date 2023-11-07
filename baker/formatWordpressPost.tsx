@@ -1,7 +1,7 @@
 import cheerio from "cheerio"
 import urlSlug from "url-slug"
 import React from "react"
-import ReactDOMServer from "react-dom/server.js"
+import ReactDOMServer from "react-dom/server"
 import { BAKED_BASE_URL, HTTPS_ONLY } from "../settings/serverSettings.js"
 import { getTables } from "../db/wpdb.js"
 import Tablepress from "../site/Tablepress.js"

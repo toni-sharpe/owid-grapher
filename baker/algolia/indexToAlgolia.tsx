@@ -14,7 +14,7 @@ import {
     PostRestApi,
 } from "@ourworldindata/utils"
 import { formatPost } from "../formatWordpressPost.js"
-import ReactDOMServer from "react-dom/server.js"
+import ReactDOMServer from "react-dom/server"
 import { getAlgoliaClient } from "./configureAlgolia.js"
 import { htmlToText } from "html-to-text"
 import {

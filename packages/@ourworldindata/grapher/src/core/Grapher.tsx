@@ -1,5 +1,5 @@
 import React from "react"
-import ReactDOMServer from "react-dom/server.js"
+import ReactDOMServer from "react-dom/server"
 import {
     observable,
     computed,
