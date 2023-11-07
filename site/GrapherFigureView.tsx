@@ -43,8 +43,8 @@ export class GrapherFigureView extends React.Component<{ grapher: Grapher }> {
                 : undefined,
             bounds: this.bounds,
             dataApiUrl: DATA_API_URL,
-            dataApiUrlForAdmin:
-                this.context?.admin?.settings?.DATA_API_FOR_ADMIN_UI, // passed this way because clientSettings are baked and need a recompile to be updated
+            dataApiUrlForAdmin: (this.context as any)?.admin?.settings
+                ?.DATA_API_FOR_ADMIN_UI, // passed this way because clientSettings are baked and need a recompile to be updated
             enableKeyboardShortcuts: true,
         }
         return (

@@ -147,7 +147,7 @@ const LinkedA = ({ span }: { span: SpanLink }): JSX.Element => {
 
 export function renderSpan(
     span: Span,
-    key: React.Key | null | undefined = undefined
+    key: string | number | null | undefined = undefined
 ): JSX.Element {
     return match(span)
         .with({ spanType: "span-simple-text" }, (span) => (

@@ -21,24 +21,26 @@ export interface IndicatorSourcesProps {
 
 export const IndicatorSources = (props: IndicatorSourcesProps) => {
     const citationFullBlockFn = (source: OriginSubset) => {
-        source.citationFull && (
-            <div
-                className="key-data"
-                style={{
-                    gridColumn: "span 2",
-                }}
-            >
-                <div className="key-data__title--dark">Citation</div>
-                This is the citation of the original data obtained from the
-                source, prior to any processing or adaptation by Our World in
-                Data. To cite data downloaded from this page, please use the
-                suggested citation given in{" "}
-                <a href={"#" + REUSE_THIS_WORK_SECTION_ID}>
-                    Reuse This Work
-                </a>{" "}
-                below.
-                <CodeSnippet code={source.citationFull} theme="light" />
-            </div>
+        return (
+            source.citationFull && (
+                <div
+                    className="key-data"
+                    style={{
+                        gridColumn: "span 2",
+                    }}
+                >
+                    <div className="key-data__title--dark">Citation</div>
+                    This is the citation of the original data obtained from the
+                    source, prior to any processing or adaptation by Our World
+                    in Data. To cite data downloaded from this page, please use
+                    the suggested citation given in{" "}
+                    <a href={"#" + REUSE_THIS_WORK_SECTION_ID}>
+                        Reuse This Work
+                    </a>{" "}
+                    below.
+                    <CodeSnippet code={source.citationFull} theme="light" />
+                </div>
+            )
         )
     }
     return (

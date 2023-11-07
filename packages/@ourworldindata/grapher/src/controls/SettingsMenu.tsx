@@ -297,7 +297,7 @@ export class SettingsMenu extends React.Component<{
         return { animation: `${selector}-${phase} ${timing}` }
     }
 
-    @computed get menu(): JSX.Element | void {
+    @computed get menu(): JSX.Element | React.ReactPortal | undefined {
         const { visible, drawer } = this
 
         if (visible) {
@@ -305,6 +305,7 @@ export class SettingsMenu extends React.Component<{
                 ? this.menuContents
                 : createPortal(this.menuContents, drawer)
         }
+        return undefined
     }
 
     @computed get menuContents(): JSX.Element {

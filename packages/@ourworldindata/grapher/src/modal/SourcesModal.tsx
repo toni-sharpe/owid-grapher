@@ -87,7 +87,7 @@ export class SourcesModal extends React.Component<{
         const retrievedDate =
             source.retrievedDate ??
             (column.def.origins && column.def.origins.length
-                ? column.def.origins[0].dateAccessed
+                ? column.def.origins[0].dateAccessed?.toString()
                 : undefined)
 
         const citationFull =

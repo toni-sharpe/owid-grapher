@@ -530,7 +530,10 @@ export class Toggle extends React.Component<ToggleProps> {
     }
 }
 
-export class EditableList extends React.Component<{ className?: string }> {
+export class EditableList extends React.Component<{
+    className?: string
+    children?: React.ReactNode
+}> {
     render() {
         return this.props.children ? (
             <ul
@@ -615,7 +618,10 @@ export class ColorBox extends React.Component<{
     }
 }
 
-export class Section extends React.Component<{ name: string }> {
+export class Section extends React.Component<{
+    name: string
+    children?: React.ReactNode
+}> {
     render() {
         return (
             <section>
@@ -1018,6 +1024,7 @@ export class BindAutoFloat<
 export class Modal extends React.Component<{
     className?: string
     onClose: () => void
+    children?: React.ReactNode
 }> {
     base: React.RefObject<HTMLDivElement> = React.createRef()
     dismissable: boolean = true

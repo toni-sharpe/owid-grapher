@@ -49,7 +49,7 @@ const Thumb = ({
  */
 export const KeyInsightsThumbs = ({ titles }: { titles: string[] }) => {
     const [selectedId, setSelectedId] = useState<string>("0")
-    const [slides, setSlides] = useState<HTMLElement | null>(null)
+    const [slides, setSlides] = useState<Element | undefined | null>(null)
     const [slug, setSlug] = useState<string>("")
     const apiRef = React.useRef({} as scrollVisibilityApiType)
 
@@ -57,7 +57,7 @@ export const KeyInsightsThumbs = ({ titles }: { titles: string[] }) => {
     // running on page load only, runs after the ref has been attached (and not
     // on first render, which would be before)
     // https://reactjs.org/docs/hooks-faq.html#how-can-i-measure-a-dom-node
-    const thumbsRef = useCallback((node) => {
+    const thumbsRef = useCallback((node: HTMLDivElement) => {
         if (node !== null) {
             const keyInsightsNode = node.parentElement?.parentElement
 
@@ -66,7 +66,10 @@ export const KeyInsightsThumbs = ({ titles }: { titles: string[] }) => {
             )
             setSlides(tempSlides)
             // get slug from previous <h3>
-            setSlug(keyInsightsNode?.previousElementSibling?.getAttribute("id"))
+            setSlug(
+                keyInsightsNode?.previousElementSibling?.getAttribute("id") ??
+                    ""
+            )
         }
     }, [])
 

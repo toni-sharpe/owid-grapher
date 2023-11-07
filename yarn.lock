@@ -4269,10 +4269,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/history@npm:*":
-  version: 4.7.2
-  resolution: "@types/history@npm:4.7.2"
-  checksum: edf0a105a4c54191eecee4ecc2137d338162aee7908bc9166de88ecf74b0239bf35b01a0c72723ee57c32ad6ac8be2d9a12cba0a6654e8225d09fb55578a29f9
+"@types/history@npm:*, @types/history@npm:^4.7.11":
+  version: 4.7.11
+  resolution: "@types/history@npm:4.7.11"
+  checksum: 1da529a3485f3015daf794effa3185493bf7dd2551c26932389c614f5a0aab76ab97645897d1eef9c74ead216a3848fcaa019f165bbd6e4b71da6eff164b4c68
   languageName: node
   linkType: hard
 
@@ -4626,14 +4626,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-router-dom@npm:^4.3.3":
-  version: 4.3.3
-  resolution: "@types/react-router-dom@npm:4.3.3"
+"@types/react-router-dom@npm:^5.3.3":
+  version: 5.3.3
+  resolution: "@types/react-router-dom@npm:5.3.3"
   dependencies:
-    "@types/history": "npm:*"
+    "@types/history": "npm:^4.7.11"
     "@types/react": "npm:*"
     "@types/react-router": "npm:*"
-  checksum: acfd7eba0fef598b148de98234689bef70f8987d32cb326dc52bf348d3907c7ab0281d94a22da1fd07664b3867e02724ed02f34a92d803f7b0623b5306e79086
+  checksum: 28c4ea48909803c414bf5a08502acbb8ba414669b4b43bb51297c05fe5addc4df0b8fd00e0a9d1e3535ec4073ef38aaafac2c4a2b95b787167d113bc059beff3
   languageName: node
   linkType: hard
 
@@ -4665,18 +4665,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:^17":
-  version: 17.0.45
-  resolution: "@types/react@npm:17.0.45"
-  dependencies:
-    "@types/prop-types": "npm:*"
-    "@types/scheduler": "npm:*"
-    csstype: "npm:^3.0.2"
-  checksum: 5a5a3f91638445ccab39ec5ac362a7f463961ed8271de271bb6bdbeb79c6dbe5787fcaab686dedf73e15d898f941100bb79d0a7dd86474f7f6442ccfb144752e
-  languageName: node
-  linkType: hard
-
-"@types/react@npm:^18.2.36":
+"@types/react@npm:*, @types/react@npm:^18.2.36":
   version: 18.2.36
   resolution: "@types/react@npm:18.2.36"
   dependencies:
@@ -4684,6 +4673,17 @@ __metadata:
     "@types/scheduler": "npm:*"
     csstype: "npm:^3.0.2"
   checksum: 4dac0a9f808b0da01029146efe7eeed454da68d01f0f73d417c95d691460f210b9baeb5fa756015f5a048825a1145a7dcb6c6d9c3e4e7876c683edf9892c383b
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:^17":
+  version: 17.0.45
+  resolution: "@types/react@npm:17.0.45"
+  dependencies:
+    "@types/prop-types": "npm:*"
+    "@types/scheduler": "npm:*"
+    csstype: "npm:^3.0.2"
+  checksum: 5a5a3f91638445ccab39ec5ac362a7f463961ed8271de271bb6bdbeb79c6dbe5787fcaab686dedf73e15d898f941100bb79d0a7dd86474f7f6442ccfb144752e
   languageName: node
   linkType: hard
 
@@ -10364,7 +10364,7 @@ __metadata:
     "@types/react-color": "npm:^3.0.2"
     "@types/react-dom": "npm:^18.2.14"
     "@types/react-recaptcha": "npm:^2.3.4"
-    "@types/react-router-dom": "npm:^4.3.3"
+    "@types/react-router-dom": "npm:^5.3.3"
     "@types/react-tag-autocomplete": "npm:^6.1.1"
     "@types/shell-quote": "npm:^1.7.1"
     "@types/shelljs": "npm:^0.8.11"

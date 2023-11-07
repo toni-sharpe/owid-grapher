@@ -46,6 +46,7 @@ class SourceEditable {
 class SourceEditor extends React.Component<{ source: SourcePageData }> {
     @observable newSource!: SourceEditable
     @observable isDeleted: boolean = false
+    context!: AdminAppContextType
 
     // Store the original source to determine when it is modified
     UNSAFE_componentWillMount() {

@@ -1776,7 +1776,7 @@ export class Grapher
     ): Grapher | null {
         const grapherInstanceRef = React.createRef<Grapher>()
 
-        let ErrorBoundary = React.Fragment as React.ComponentType // use React.Fragment as a sort of default error boundary if Bugsnag is not available
+        let ErrorBoundary = React.Fragment // use React.Fragment as a sort of default error boundary if Bugsnag is not available
         if (Bugsnag && (Bugsnag as any)._client) {
             ErrorBoundary =
                 Bugsnag.getPlugin("react")?.createErrorBoundary(React) ??
