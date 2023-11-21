@@ -109,9 +109,12 @@ export class EntitySelectorModal extends React.Component<{
     }
 
     @computed private get searchableEntities(): SearchableEntity[] {
-        return this.sortedAvailableEntities.map((name) => {
-            return { name } as SearchableEntity
-        })
+        const { selectedEntityNames } = this.selectionArray
+        return this.sortedAvailableEntities
+            .filter((name) => !selectedEntityNames.includes(name))
+            .map((name) => {
+                return { name } as SearchableEntity
+            })
     }
 
     @computed get searchResults(): SearchableEntity[] {
