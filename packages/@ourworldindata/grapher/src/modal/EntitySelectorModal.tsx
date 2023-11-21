@@ -83,7 +83,7 @@ export class EntitySelectorModal extends React.Component<{
     }
 
     @computed private get modalBounds(): Bounds {
-        const maxWidth = this.isMulti ? 740 : 640
+        const maxWidth = 366
         const padWidth = Math.max(16, (this.tabBounds.width - maxWidth) / 2)
         return this.tabBounds.padHeight(16).padWidth(padWidth)
     }
