@@ -182,11 +182,16 @@ export class EntitySelectorModal extends React.Component<{
     }
 
     render(): JSX.Element {
-        const { selectionArray, searchResults, searchInput, isMulti, manager } =
-            this
+        const {
+            selectionArray,
+            searchResults,
+            searchInput,
+            isMulti,
+            manager: { entityTypePlural, entitiesAreCountryLike },
+        } = this
 
         const title = isMulti
-            ? `Add/remove ${manager.entityTypePlural}`
+            ? `Add/remove ${entityTypePlural}`
             : `Choose ${a(this.entityType)}`
 
         return (
@@ -235,31 +240,38 @@ export class EntitySelectorModal extends React.Component<{
                         </div>
                     </div>
                     <div className="entities">
+                        {this.renderSelectedData()}
                         <div className="searchResults">
                             {searchResults.length > 0 ? (
-                                <ul>
-                                    {searchResults.map((result) => (
-                                        <EntitySearchResult
-                                            key={result.name}
-                                            result={result}
-                                            isMulti={this.isMulti}
-                                            isChecked={selectionArray.selectedSet.has(
-                                                result.name
-                                            )}
-                                            onSelect={this.onSelect}
-                                        />
-                                    ))}
-                                </ul>
+                                <>
+                                    <div className="searchResultsLabel">
+                                        {entitiesAreCountryLike
+                                            ? "Countries, regions, and groups"
+                                            : entityTypePlural}
+                                    </div>
+                                    <ul>
+                                        {searchResults.map((result) => (
+                                            <EntitySearchResult
+                                                key={result.name}
+                                                result={result}
+                                                isMulti={this.isMulti}
+                                                isChecked={selectionArray.selectedSet.has(
+                                                    result.name
+                                                )}
+                                                onSelect={this.onSelect}
+                                            />
+                                        ))}
+                                    </ul>
+                                </>
                             ) : (
                                 <div className="empty">
-                                    {this.manager.entitiesAreCountryLike &&
+                                    {entitiesAreCountryLike &&
                                     isCountryName(this.searchInput)
                                         ? "There is no data for the country, region or group you are looking for."
                                         : "Nothing turned up. You may want to try using different keywords or checking for typos."}
                                 </div>
                             )}
                         </div>
-                        {this.renderSelectedData()}
                     </div>
                 </div>
             </Modal>
