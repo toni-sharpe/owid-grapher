@@ -1,6 +1,10 @@
 .EntitySelector {
-    $light-stroke: #e7e7e7;
+    $light-stroke: #f2f2f2;
+    $mid-stroke: #e7e7e7;
     $active-fill: #dbe5f0;
+
+    $light-text: #858585;
+    $dark-text: #585858;
 
     text-align: left;
     margin-bottom: $modal-padding;
@@ -48,7 +52,7 @@
             width: 100%;
             height: 32px;
             font-size: 0.8125em;
-            border: 1px solid $light-stroke;
+            border: 1px solid $mid-stroke;
             padding-left: $svg-margin-left + $svg-size + 4px;
             padding-right: 1em;
             border-radius: 4px;
@@ -91,7 +95,7 @@
             color: $dark-text;
             cursor: pointer;
             padding: 12px 16px;
-            border-bottom: 1px solid $light-stroke;
+            border-bottom: 1px solid $mid-stroke;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -125,49 +129,29 @@
 
         .entities {
             margin-top: 1.5em;
-            display: flex;
-            justify-content: space-between;
         }
 
-        .selectedData {
-            min-width: 25%;
-            padding-left: 1em;
-
-            .selectedLabel {
-                color: #a1a1a1;
-                font-size: 0.8125em;
-                font-weight: 700;
-                margin: 0;
-                margin-bottom: 1em;
-            }
+        .searchResultsLabel,
+        .selectedLabel {
+            color: $light-text;
+            font-size: 14px;
+            line-height: 21px;
+            font-weight: 400;
+            font-style: italic;
+            margin: 10px 0;
         }
 
-        .searchResults {
-            width: 100%;
+        li {
+            padding: 12px 8px 12px 16px;
+            border-bottom: 1px solid $light-stroke;
         }
 
-        @media (min-width: 800px) {
-            .searchResults ul {
-                column-count: 2;
-            }
+        li:first-child {
+            border-top: 1px solid $light-stroke;
         }
+    }
+}
 
-        li + li {
-            margin-top: 1em;
-        }
-
-        .clearSelection {
-            font-size: 0.8125em;
-            padding: 0;
-            margin-left: 16px;
-            color: $dark-text;
-            font-weight: 500;
-            text-decoration: underline;
-            cursor: pointer;
-
-            &:hover {
-                text-decoration: none;
-            }
 .modalOverlay .searchFooter {
     position: absolute;
     bottom: 0;
