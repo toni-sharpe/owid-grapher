@@ -11,6 +11,7 @@ export class Modal extends React.Component<{
     onDismiss: () => void
     title?: string
     children?: React.ReactNode
+    footer?: React.ReactNode
     isHeightFixed?: boolean // by default, the modal height is not fixed but fits to the content
     alignVertical?: "center" | "bottom"
 }> {
@@ -103,6 +104,7 @@ export class Modal extends React.Component<{
                         <div className="modalScrollable">
                             {this.props.children}
                         </div>
+                        {this.props.footer}
                     </div>
                 </div>
             </div>
