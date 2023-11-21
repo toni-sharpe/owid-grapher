@@ -168,6 +168,35 @@
             &:hover {
                 text-decoration: none;
             }
+.modalOverlay .searchFooter {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    padding: 16px;
+    width: 100%;
+    height: 48px;
+
+    background: white;
+    border-radius: 0 0 4px 4px;
+    box-shadow: rgba(0, 0, 0, 4%) 0 -4px 8px;
+
+    .clearSelection {
+        font-size: 13px;
+        letter-spacing: 0.01em;
+        padding: 0;
+
+        color: $dark-text;
+        font-weight: 500;
+        text-decoration: underline;
+        cursor: pointer;
+        text-decoration: none;
+        &:hover {
+            text-decoration: underline;
         }
     }
 }

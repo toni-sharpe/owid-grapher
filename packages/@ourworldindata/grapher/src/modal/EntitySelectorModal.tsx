@@ -195,6 +195,19 @@ export class EntitySelectorModal extends React.Component<{
                 onDismiss={this.onDismiss}
                 bounds={this.modalBounds}
                 isHeightFixed={true}
+                footer={
+                    this.isMulti &&
+                    selectionArray.selectedEntityNames.length > 0 ? (
+                        <div className="searchFooter">
+                            <button
+                                className="clearSelection"
+                                onClick={this.onClear}
+                            >
+                                Clear selection
+                            </button>
+                        </div>
+                    ) : undefined
+                }
             >
                 <div
                     className={classnames(
@@ -220,17 +233,7 @@ export class EntitySelectorModal extends React.Component<{
                             />
                             <FontAwesomeIcon icon={faMagnifyingGlass} />
                         </div>
-                        {this.isMulti &&
-                        selectionArray.selectedEntityNames.length > 0 ? (
-                            <button
-                                className="clearSelection"
-                                onClick={this.onClear}
-                            >
-                                Clear selection
-                            </button>
-                        ) : undefined}
                     </div>
-
                     <div className="entities">
                         <div className="searchResults">
                             {searchResults.length > 0 ? (
