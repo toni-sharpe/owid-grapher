@@ -2870,7 +2870,7 @@ export class Grapher
             return true
         if (
             this.addCountryMode === EntitySelectionMode.SingleEntity &&
-            this.facetStrategy !== FacetStrategy.none
+            this.facetStrategy === FacetStrategy.entity
         )
             return true
 
