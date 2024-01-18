@@ -10,6 +10,7 @@ import {
 import { GdocBase, Tag } from "./GdocBase.js"
 import { GdocPost } from "./GdocPost.js"
 import { GdocDataInsight } from "./GdocDataInsight.js"
+import { GdocHomepage } from "./GdocHomepage.js"
 
 // Handles the registration and loading of Gdocs
 // Couldn't put this in GdocBase because of circular dependency issues
@@ -51,6 +52,11 @@ export class GdocFactory {
                 // TODO: better validation here?
                 () => GdocDataInsight.create({ ...(json as any) })
             )
+            .with(
+                OwidGdocType.Homepage,
+                // TODO: better validation here?
+                () => GdocHomepage.create({ ...(json as any) })
+            )
             .exhaustive()
     }
 
@@ -80,7 +86,7 @@ export class GdocFactory {
     static async loadBySlug(
         slug: string,
         publishedExplorersBySlug: Record<string, any>
-    ): Promise<GdocPost | GdocDataInsight> {
+    ): Promise<GdocPost | GdocDataInsight | GdocHomepage> {
         const base = await GdocBase.findOne({
             where: { slug, published: true },
         })
@@ -98,7 +104,7 @@ export class GdocFactory {
         id: string,
         publishedExplorersBySlug: Record<string, any>,
         contentSource?: GdocsContentSource
-    ): Promise<GdocPost | GdocDataInsight> {
+    ): Promise<GdocPost | GdocDataInsight | GdocHomepage> {
         const base = await GdocBase.findOne({
             where: {
                 id,
@@ -132,6 +138,7 @@ export class GdocFactory {
                 () => GdocPost.create(base)
             )
             .with(OwidGdocType.DataInsight, () => GdocDataInsight.create(base))
+            .with(OwidGdocType.Homepage, () => GdocHomepage.create(base))
             .exhaustive()
 
         if (contentSource === GdocsContentSource.Gdocs) {
