@@ -522,6 +522,7 @@ export class GdocBase extends BaseEntity implements OwidGdocBaseInterface {
                         "html",
                         "image",
                         "key-indicator",
+                        "key-indicator-collection",
                         "list",
                         "missing-data",
                         "numbered-list",
@@ -534,7 +535,6 @@ export class GdocBase extends BaseEntity implements OwidGdocBaseInterface {
                         "sticky-right",
                         "table",
                         "text",
-                        "chart-book"
                     ),
                 },
                 () => []
