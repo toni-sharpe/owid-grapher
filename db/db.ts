@@ -108,7 +108,19 @@ export const knexInstance = (): Knex<any, any[]> => {
 export const knexTable = (table: string): Knex.QueryBuilder =>
     knexInstance().table(table)
 
-export const knexRaw = (str: string): Knex.Raw => knexInstance().raw(str)
+export const legacyKnexRaw = (str: string): Knex.Raw => knexInstance().raw(str)
+
+export const knexRaw = async <TRow = unknown>(
+    str: string,
+    params?: any[],
+    knex?: Knex<any, any[]>
+): Promise<TRow[]> => (await (knex ?? knexInstance()).raw(str, params ?? []))[0]
+
+export const knexRawFirst = async <TRow = unknown>(
+    str: string,
+    params?: any[],
+    knex?: Knex<any, any[]>
+): Promise<TRow | undefined> => (await knexRaw<TRow>(str, params, knex))[0]
 
 /**
  *  In the backporting workflow, the users create gdoc posts for posts. As long as these are not yet published,
@@ -119,7 +131,7 @@ export const knexRaw = (str: string): Knex.Raw => knexInstance().raw(str)
 export const getSlugsWithPublishedGdocsSuccessors = async (): Promise<
     Set<string>
 > => {
-    return knexRaw(
+    return legacyKnexRaw(
         `-- sql
             select slug from posts_with_gdoc_publish_status
             where isGdocPublished = TRUE`

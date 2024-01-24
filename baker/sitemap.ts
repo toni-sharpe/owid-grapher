@@ -67,7 +67,7 @@ export const makeSitemap = async (explorerAdminServer: ExplorerAdminServer) => {
     const gdocPosts = await GdocPost.getPublishedGdocs()
     const charts = (await db
         .knexTable(Chart.table)
-        .select(db.knexRaw(`updatedAt, config->>"$.slug" AS slug`))
+        .select(db.legacyKnexRaw(`updatedAt, config->>"$.slug" AS slug`))
         .whereRaw('config->"$.isPublished" = true')) as {
         updatedAt: Date
         slug: string

@@ -726,7 +726,7 @@ export class SiteBaker {
             .join("post_tags", { "post_tags.post_id": "posts.id" })
             .join("tags", { "tags.id": "post_tags.tag_id" })
             .where({ "tags.name": "Entries" })
-            .select(db.knexRaw("distinct year(published_at) as year"))
+            .select(db.legacyKnexRaw("distinct year(published_at) as year"))
             .orderBy("year", "DESC")) as { year: number }[]
 
         const years = rows.map((r) => r.year)

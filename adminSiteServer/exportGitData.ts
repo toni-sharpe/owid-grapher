@@ -1,14 +1,16 @@
 import * as db from "../db/db.js"
 import { syncDatasetToGitRepo } from "./gitDataExport.js"
-import { Dataset } from "../db/model/Dataset.js"
+import { DatasetsRow, DatasetsRowTableName } from "@ourworldindata/types"
 
 const main = async () => {
-    await db.getConnection()
-    for (const dataset of await Dataset.findBy({ namespace: "owid" })) {
+    const knex = db.knexInstance()
+    const datasets = await knex<DatasetsRow>(DatasetsRowTableName).where({
+        namespace: "owid",
+    })
+    for (const dataset of datasets) {
         if (!dataset.isPrivate && !dataset.nonRedistributable)
-            await syncDatasetToGitRepo(dataset.id, { commitOnly: true })
+            await syncDatasetToGitRepo(knex, dataset.id, { commitOnly: true })
     }
-    await db.closeTypeOrmAndKnexConnections()
 }
 
 main()
