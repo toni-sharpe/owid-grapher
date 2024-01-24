@@ -51,15 +51,17 @@ import {
     OwidGdoc,
 } from "@ourworldindata/utils"
 import {
+    DatasetTagsRow,
     GrapherInterface,
     OwidGdocLinkType,
+    TagsRow,
     grapherKeysToSerialize,
 } from "@ourworldindata/types"
 import {
     getVariableDataRoute,
     getVariableMetadataRoute,
 } from "@ourworldindata/grapher"
-import { Dataset } from "../db/model/Dataset.js"
+import { getDatasetById, setTagsForDataset } from "../db/model/Dataset.js"
 import { User } from "../db/model/User.js"
 import { GdocPost } from "../db/model/Gdoc/GdocPost.js"
 import { GdocBase, Tag as TagEntity } from "../db/model/Gdoc/GdocBase.js"
@@ -1672,7 +1674,7 @@ apiRouter.get(
 )
 
 apiRouter.get("/datasets.json", async (req) => {
-    const datasets = await db.queryMysql(`
+    const datasets = await db.knexRaw<Record<string, any>>(`
         WITH variable_counts AS (
             SELECT
                 v.datasetId,
@@ -1703,7 +1705,9 @@ apiRouter.get("/datasets.json", async (req) => {
         ORDER BY ad.dataEditedAt DESC
     `)
 
-    const tags = await db.queryMysql(`
+    const tags = await db.knexRaw<
+        Pick<TagsRow, "id" | "name"> & Pick<DatasetTagsRow, "datasetId">
+    >(`
         SELECT dt.datasetId, t.id, t.name FROM dataset_tags dt
         JOIN tags t ON dt.tagId = t.id
     `)
@@ -1722,7 +1726,7 @@ apiRouter.get("/datasets.json", async (req) => {
 apiRouter.get("/datasets/:datasetId.json", async (req: Request) => {
     const datasetId = expectInt(req.params.datasetId)
 
-    const dataset = await db.mysqlFirst(
+    const dataset = await db.knexRawFirst<Record<string, any>>(
         `
         SELECT d.id,
             d.namespace,
@@ -1791,7 +1795,7 @@ apiRouter.get("/datasets/:datasetId.json", async (req: Request) => {
 
     dataset.origins = origins
 
-    const sources = await db.queryMysql(
+    const sources = await db.knexRaw(
         `
         SELECT s.id, s.name, s.description
         FROM sources AS s
@@ -1854,12 +1858,13 @@ apiRouter.put("/datasets/:datasetId", async (req: Request, res: Response) => {
     // Only updates `nonRedistributable` and `tags`, other fields come from ETL
     // and are not editable
     const datasetId = expectInt(req.params.datasetId)
-    const dataset = await Dataset.findOneBy({ id: datasetId })
+    const knex = db.knexInstance()
+    const dataset = await getDatasetById(knex, datasetId)
     if (!dataset) throw new JsonError(`No dataset by id ${datasetId}`, 404)
 
-    await db.transaction(async (t) => {
+    await knex.transaction(async (t) => {
         const newDataset = (req.body as { dataset: any }).dataset
-        await t.execute(
+        await t.raw(
             `
             UPDATE datasets
             SET
@@ -1877,27 +1882,24 @@ apiRouter.put("/datasets/:datasetId", async (req: Request, res: Response) => {
         )
 
         const tagRows = newDataset.tags.map((tag: any) => [tag.id, datasetId])
-        await t.execute(`DELETE FROM dataset_tags WHERE datasetId=?`, [
-            datasetId,
-        ])
+        await t.raw(`DELETE FROM dataset_tags WHERE datasetId=?`, [datasetId])
         if (tagRows.length)
-            await t.execute(
+            await t.raw(
                 `INSERT INTO dataset_tags (tagId, datasetId) VALUES ?`,
                 [tagRows]
             )
-    })
 
-    // Note: not currently in transaction
-    try {
-        await syncDatasetToGitRepo(datasetId, {
-            oldDatasetName: dataset.name,
-            commitName: res.locals.user.fullName,
-            commitEmail: res.locals.user.email,
-        })
-    } catch (err) {
-        logErrorAndMaybeSendToBugsnag(err, req)
-        // Continue
-    }
+        try {
+            await syncDatasetToGitRepo(t, datasetId, {
+                oldDatasetName: dataset.name!,
+                commitName: res.locals.user.fullName,
+                commitEmail: res.locals.user.email,
+            })
+        } catch (err) {
+            logErrorAndMaybeSendToBugsnag(err, req)
+            // Continue
+        }
+    })
 
     return { success: true }
 })
@@ -1906,10 +1908,11 @@ apiRouter.post(
     "/datasets/:datasetId/setArchived",
     async (req: Request, res: Response) => {
         const datasetId = expectInt(req.params.datasetId)
-        const dataset = await Dataset.findOneBy({ id: datasetId })
+        const knex = db.knexInstance()
+        const dataset = await getDatasetById(knex, datasetId)
         if (!dataset) throw new JsonError(`No dataset by id ${datasetId}`, 404)
-        await db.transaction(async (t) => {
-            await t.execute(`UPDATE datasets SET isArchived = 1 WHERE id=?`, [
+        await knex.transaction(async (t) => {
+            await t.raw(`UPDATE datasets SET isArchived = 1 WHERE id=?`, [
                 datasetId,
             ])
         })
@@ -1922,7 +1925,7 @@ apiRouter.post(
     async (req: Request, res: Response) => {
         const datasetId = expectInt(req.params.datasetId)
 
-        await Dataset.setTags(datasetId, req.body.tagIds)
+        await setTagsForDataset(db.knexInstance(), datasetId, req.body.tagIds)
 
         return { success: true }
     }
@@ -1933,28 +1936,25 @@ apiRouter.delete(
     async (req: Request, res: Response) => {
         const datasetId = expectInt(req.params.datasetId)
 
-        const dataset = await Dataset.findOneBy({ id: datasetId })
+        const knex = db.knexInstance()
+        const dataset = await getDatasetById(knex, datasetId)
         if (!dataset) throw new JsonError(`No dataset by id ${datasetId}`, 404)
 
-        await db.transaction(async (t) => {
-            await t.execute(
+        await knex.transaction(async (t) => {
+            await t.raw(
                 `DELETE d FROM country_latest_data AS d JOIN variables AS v ON d.variable_id=v.id WHERE v.datasetId=?`,
                 [datasetId]
             )
-            await t.execute(`DELETE FROM dataset_files WHERE datasetId=?`, [
+            await t.raw(`DELETE FROM dataset_files WHERE datasetId=?`, [
                 datasetId,
             ])
-            await t.execute(`DELETE FROM variables WHERE datasetId=?`, [
-                datasetId,
-            ])
-            await t.execute(`DELETE FROM sources WHERE datasetId=?`, [
-                datasetId,
-            ])
-            await t.execute(`DELETE FROM datasets WHERE id=?`, [datasetId])
+            await t.raw(`DELETE FROM variables WHERE datasetId=?`, [datasetId])
+            await t.raw(`DELETE FROM sources WHERE datasetId=?`, [datasetId])
+            await t.raw(`DELETE FROM datasets WHERE id=?`, [datasetId])
         })
 
         try {
-            await removeDatasetFromGitRepo(dataset.name, dataset.namespace, {
+            await removeDatasetFromGitRepo(dataset.name!, dataset.namespace, {
                 commitName: res.locals.user.fullName,
                 commitEmail: res.locals.user.email,
             })
@@ -1972,12 +1972,13 @@ apiRouter.post(
     async (req: Request, res: Response) => {
         const datasetId = expectInt(req.params.datasetId)
 
-        const dataset = await Dataset.findOneBy({ id: datasetId })
+        const knex = db.knexInstance()
+        const dataset = await getDatasetById(knex, datasetId)
         if (!dataset) throw new JsonError(`No dataset by id ${datasetId}`, 404)
 
         if (req.body.republish) {
-            await db.transaction(async (t) => {
-                await t.execute(
+            await knex.transaction(async (t) => {
+                await t.raw(
                     `
             UPDATE charts
             SET config = JSON_SET(config, "$.version", config->"$.version" + 1)
@@ -2378,7 +2379,7 @@ apiRouter.post("/posts/:postId/unlinkGdoc", async (req: Request) => {
 
 apiRouter.get("/sources/:sourceId.json", async (req: Request) => {
     const sourceId = expectInt(req.params.sourceId)
-    const source = await db.mysqlFirst(
+    const source = await db.knexRawFirst<Record<string, any>>(
         `
         SELECT s.id, s.name, s.description, s.createdAt, s.updatedAt, d.namespace
         FROM sources AS s
@@ -2386,8 +2387,8 @@ apiRouter.get("/sources/:sourceId.json", async (req: Request) => {
         WHERE s.id=?`,
         [sourceId]
     )
-    source.description = JSON.parse(source.description)
-    source.variables = await db.queryMysql(
+    if (!source) throw new JsonError(`No source by id '${sourceId}'`, 404)
+    source.variables = await db.knexRaw(
         `SELECT id, name, updatedAt FROM variables WHERE variables.sourceId=?`,
         [sourceId]
     )
