@@ -533,7 +533,8 @@ export class GdocBase extends BaseEntity implements OwidGdocBaseInterface {
                         "sticky-left",
                         "sticky-right",
                         "table",
-                        "text"
+                        "text",
+                        "chart-book"
                     ),
                 },
                 () => []
