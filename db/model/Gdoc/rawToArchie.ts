@@ -36,6 +36,7 @@ import {
     RawBlockTable,
     RawBlockTableRow,
     RawBlockBlockquote,
+    RawBlockPillRow,
 } from "@ourworldindata/utils"
 import { match } from "ts-pattern"
 
@@ -620,6 +621,23 @@ function* rawBlockTableToArchieMLString(
     yield "{}"
 }
 
+function* rawBlockPillRowToArchieMLString(
+    block: RawBlockPillRow
+): Generator<string, void, undefined> {
+    yield "{.pill-row}"
+    yield* propertyToArchieMLString("title", block.value)
+    const pills = block?.value?.pills
+    if (pills) {
+        yield "[.pills]"
+        for (const pill of pills) {
+            yield* propertyToArchieMLString("text", pill)
+            yield* propertyToArchieMLString("url", pill)
+        }
+        yield "[]"
+    }
+    yield "{}"
+}
+
 export function* OwidRawGdocBlockToArchieMLStringGenerator(
     block: OwidRawGdocBlock | RawBlockTableRow
 ): Generator<string, void, undefined> {
@@ -684,6 +702,7 @@ export function* OwidRawGdocBlockToArchieMLStringGenerator(
         .with({ type: "table" }, rawBlockTableToArchieMLString)
         .with({ type: "table-row" }, rawBlockRowToArchieMLString)
         .with({ type: "blockquote" }, rawBlockBlockquoteToArchieMLString)
+        .with({ type: "pill-row" }, rawBlockPillRowToArchieMLString)
         .exhaustive()
     yield* content
 }

@@ -249,6 +249,8 @@ export {
     type EnrichedBlockTableRow,
     type EnrichedBlockTableCell,
     type RawBlockResearchAndWritingRow,
+    type RawBlockPillRow,
+    type EnrichedBlockPillRow,
 } from "./gdocTypes/ArchieMlComponents.js"
 export {
     OwidGdocPublicationContext,

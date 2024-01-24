@@ -110,8 +110,10 @@ import {
     RawBlockBlockquote,
     EnrichedBlockBlockquote,
     traverseEnrichedSpan,
+    RawBlockPillRow,
+    EnrichedBlockPillRow,
 } from "@ourworldindata/utils"
-import { checkIsInternalLink } from "@ourworldindata/components"
+import { checkIsInternalLink, getLinkType } from "@ourworldindata/components"
 import {
     extractUrl,
     getTitleSupertitleFromHeadingText,
@@ -194,6 +196,7 @@ export function parseRawBlocksToEnrichedBlocks(
         .with({ type: "align" }, parseAlign)
         .with({ type: "entry-summary" }, parseEntrySummary)
         .with({ type: "table" }, parseTable)
+        .with({ type: "pill-row" }, parsePillRow)
         .exhaustive()
 }
 
@@ -1878,4 +1881,53 @@ export function parseRefs({
     )
 
     return { definitions: parsedRefs, errors: refErrors }
+}
+
+function parsePillRow(raw: RawBlockPillRow): EnrichedBlockPillRow {
+    function createError(error: ParseError): EnrichedBlockPillRow {
+        return {
+            type: "pill-row",
+            parseErrors: [error],
+            pills: [],
+            title: "",
+        }
+    }
+
+    if (!raw.value.title) {
+        return createError({
+            message: "Pill row is missing a title",
+        })
+    }
+    if (!raw.value.pills) {
+        return createError({
+            message: "Pill row is missing pills",
+        })
+    }
+
+    const pills: { text: string; url: string }[] = []
+
+    for (const rawPill of raw.value.pills) {
+        const url = extractUrl(rawPill.url)
+        if (!url) {
+            return createError({
+                message: "A pill is missing a url",
+            })
+        }
+
+        if (!rawPill.text && getLinkType(url) !== "gdoc") {
+            return createError({
+                message:
+                    "A pill that is linking to a non-gdoc resource is missing text",
+            })
+        }
+
+        pills.push({ text: rawPill.text!, url })
+    }
+
+    return {
+        type: "pill-row",
+        parseErrors: [],
+        pills: pills,
+        title: raw.value.title,
+    }
 }

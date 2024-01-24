@@ -36,6 +36,7 @@ import {
     RawBlockVideo,
     RawBlockTable,
     RawBlockBlockquote,
+    RawBlockPillRow,
 } from "@ourworldindata/utils"
 import { spanToHtmlString } from "./gdocUtils.js"
 import { match, P } from "ts-pattern"
@@ -430,6 +431,15 @@ export function enrichedBlockToRawBlock(
                         value: spansToHtmlText(enriched.value),
                     })),
                     citation: b.citation,
+                },
+            }
+        })
+        .with({ type: "pill-row" }, (b): RawBlockPillRow => {
+            return {
+                type: "pill-row",
+                value: {
+                    title: b.title,
+                    pills: b.pills,
                 },
             }
         })

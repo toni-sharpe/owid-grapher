@@ -535,4 +535,13 @@ export const enrichedBlockExamples: Record<
         citation: "Max Roser",
         parseErrors: [],
     },
+    "pill-row": {
+        type: "pill-row",
+        title: "Recently updated",
+        pills: [
+            { text: "Energy", url: "https://ourworldindata.org/energy" },
+            { text: "Poverty", url: "https://ourworldindata.org/poverty" },
+        ],
+        parseErrors: [],
+    },
 }

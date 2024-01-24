@@ -271,5 +271,12 @@ ${links}`
             ).join("\n\n> ")
             return `> ${text}` + b.citation ? `\n-- ${b.citation}` : ""
         })
+        .with({ type: "pill-row" }, (b): string | undefined => {
+            const title = b.title ? `### ${b.title}` : ""
+            const pills = b.pills
+                .map((pill) => `* [${pill.text}](${pill.url})`)
+                .join("\n")
+            return [title, pills].join("\n")
+        })
         .exhaustive()
 }
