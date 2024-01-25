@@ -73,13 +73,18 @@ export const IMAGE_HOSTING_BUCKET_PATH: string =
 export const IMAGE_HOSTING_BUCKET_SUBFOLDER_PATH: string =
     IMAGE_HOSTING_BUCKET_PATH.slice(IMAGE_HOSTING_BUCKET_PATH.indexOf("/") + 1)
 
-// Fast-track settings, by default points to staging version. You need Tailscale to access it.
-export const FASTTRACK_URL: string =
-    process.env.FASTTRACK_URL ?? "http://etl-prod-2:8082/"
-
 // Production ETL API runs on http://etl-prod-2:8083/v1 (you need Tailscale to access it)
 export const ETL_API_URL: string =
-    process.env.ETL_API_URL ?? `${ADMIN_BASE_URL}:8000/api/v1`
+    process.env.ETL_API_URL ?? `${ADMIN_BASE_URL}:8081/api/v1`
+
+export const FASTTRACK_URL: string =
+    process.env.FASTTRACK_URL ?? `${ADMIN_BASE_URL}:8082/`
+
+export const STAGING_SYNC_URL: string =
+    process.env.STAGING_SYNC_URL ?? `${ADMIN_BASE_URL}:8083/`
+
+export const WIZARD_URL: string =
+    process.env.WIZARD_URL ?? `${ADMIN_BASE_URL}:8053/`
 
 export const GDOCS_DETAILS_ON_DEMAND_ID: string =
     process.env.GDOCS_DETAILS_ON_DEMAND_ID ?? ""
