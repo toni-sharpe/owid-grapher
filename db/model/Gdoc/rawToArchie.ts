@@ -37,6 +37,7 @@ import {
     RawBlockTableRow,
     RawBlockBlockquote,
     RawBlockPillRow,
+    RawBlockHomepageSearch,
 } from "@ourworldindata/utils"
 import { match } from "ts-pattern"
 
@@ -638,6 +639,13 @@ function* rawBlockPillRowToArchieMLString(
     yield "{}"
 }
 
+function* rawBlockHomepageSearchToArchieMLString(
+    _: RawBlockHomepageSearch
+): Generator<string, void, undefined> {
+    yield "{.homepage-search}"
+    yield "{}"
+}
+
 export function* OwidRawGdocBlockToArchieMLStringGenerator(
     block: OwidRawGdocBlock | RawBlockTableRow
 ): Generator<string, void, undefined> {
@@ -703,6 +711,10 @@ export function* OwidRawGdocBlockToArchieMLStringGenerator(
         .with({ type: "table-row" }, rawBlockRowToArchieMLString)
         .with({ type: "blockquote" }, rawBlockBlockquoteToArchieMLString)
         .with({ type: "pill-row" }, rawBlockPillRowToArchieMLString)
+        .with(
+            { type: "homepage-search" },
+            rawBlockHomepageSearchToArchieMLString
+        )
         .exhaustive()
     yield* content
 }

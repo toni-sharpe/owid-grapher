@@ -112,6 +112,8 @@ import {
     traverseEnrichedSpan,
     RawBlockPillRow,
     EnrichedBlockPillRow,
+    RawBlockHomepageSearch,
+    EnrichedBlockHomepageSearch,
 } from "@ourworldindata/utils"
 import { checkIsInternalLink, getLinkType } from "@ourworldindata/components"
 import {
@@ -197,6 +199,7 @@ export function parseRawBlocksToEnrichedBlocks(
         .with({ type: "entry-summary" }, parseEntrySummary)
         .with({ type: "table" }, parseTable)
         .with({ type: "pill-row" }, parsePillRow)
+        .with({ type: "homepage-search" }, parseHomepageSearch)
         .exhaustive()
 }
 
@@ -1929,5 +1932,14 @@ function parsePillRow(raw: RawBlockPillRow): EnrichedBlockPillRow {
         parseErrors: [],
         pills: pills,
         title: raw.value.title,
+    }
+}
+
+function parseHomepageSearch(
+    _: RawBlockHomepageSearch
+): EnrichedBlockHomepageSearch {
+    return {
+        type: "homepage-search",
+        parseErrors: [],
     }
 }

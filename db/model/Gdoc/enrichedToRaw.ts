@@ -37,6 +37,7 @@ import {
     RawBlockTable,
     RawBlockBlockquote,
     RawBlockPillRow,
+    RawBlockHomepageSearch,
 } from "@ourworldindata/utils"
 import { spanToHtmlString } from "./gdocUtils.js"
 import { match, P } from "ts-pattern"
@@ -441,6 +442,11 @@ export function enrichedBlockToRawBlock(
                     title: b.title,
                     pills: b.pills,
                 },
+            }
+        })
+        .with({ type: "homepage-search" }, (_): RawBlockHomepageSearch => {
+            return {
+                type: "homepage-search",
             }
         })
         .exhaustive()

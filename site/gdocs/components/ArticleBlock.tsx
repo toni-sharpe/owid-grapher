@@ -35,6 +35,7 @@ import { AllCharts } from "./AllCharts.js"
 import Video from "./Video.js"
 import { Table } from "./Table.js"
 import { PillRow } from "./PillRow.js"
+import { Autocomplete } from "../../search/Autocomplete.js"
 
 export type Container =
     | "default"
@@ -65,6 +66,7 @@ const layouts: { [key in Container]: Layouts} = {
         ["explorer"]: "col-start-2 span-cols-12",
         ["gray-section"]: "span-cols-14 grid grid-cols-12-full-width",
         ["heading"]: "col-start-5 span-cols-6 col-md-start-3 span-md-cols-10 span-sm-cols-12 col-sm-start-2",
+        ["homepage-search"]: "grid grid-cols-12-full-width span-cols-14",
         ["horizontal-rule"]: "col-start-5 span-cols-6 col-md-start-3 span-md-cols-10 span-sm-cols-12 col-sm-start-2",
         ["html"]: "col-start-5 span-cols-6 col-md-start-3 span-md-cols-10 span-sm-cols-12 col-sm-start-2",
         ["image--narrow"]: "col-start-5 span-cols-6 col-md-start-3 span-md-cols-10 col-sm-start-2 span-sm-cols-12",
@@ -631,6 +633,24 @@ export default function ArticleBlock({
                     {...block}
                     className={getLayout("pill-row", containerType)}
                 />
+            )
+        })
+        .with({ type: "homepage-search" }, (_) => {
+            return (
+                <div className={getLayout("homepage-search", containerType)}>
+                    <h2 className="h2-bold span-cols-14">
+                        Search Our World in Data
+                    </h2>
+                    <Autocomplete
+                        placeholder="Try “COVID-19”, “GDP”, “Energy”, “CO2 emissions per capita”…"
+                        className="span-cols-6 col-start-5 span-md-cols-10 col-md-start-3 span-sm-cols-12 col-sm-start-2"
+                        detachedMediaQuery="none"
+                    />
+                    <p className="span-cols-14">
+                        3343 charts across 297 topics — All free: open access
+                        and open source
+                    </p>
+                </div>
             )
         })
         .exhaustive()

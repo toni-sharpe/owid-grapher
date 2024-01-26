@@ -1644,7 +1644,8 @@ export function traverseEnrichedBlocks(
                     "topic-page-intro",
                     "all-charts",
                     "entry-summary",
-                    "pill-row"
+                    "pill-row",
+                    "homepage-search"
                 ),
             },
             callback
