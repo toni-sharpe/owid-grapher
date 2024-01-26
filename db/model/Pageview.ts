@@ -1,6 +1,11 @@
 import { keyBy } from "lodash"
 import { Entity, Column, BaseEntity } from "typeorm"
 import { RawPageview } from "@ourworldindata/utils"
+import * as db from "../db.js"
+import {
+    AnalyticsPageviewsRow,
+    AnalyticsPageviewsRowTableName,
+} from "@ourworldindata/types"
 
 @Entity("analytics_pageviews")
 export class Pageview extends BaseEntity implements RawPageview {
@@ -18,13 +23,20 @@ export class Pageview extends BaseEntity implements RawPageview {
     @Column() views_14d!: number
     /** Sum of pageviews over the last 365 days. */
     @Column() views_365d!: number
+}
 
-    static async getViewsByUrlObj(): Promise<{ [url: string]: RawPageview }> {
-        const pageviews = await Pageview.find()
+export async function getAnalyticsPageviewsByUrlObj(): Promise<{
+    [url: string]: AnalyticsPageviewsRow
+}> {
+    const pageviews = await db.knexRaw<AnalyticsPageviewsRow>(
+        "SELECT * FROM ??",
+        [AnalyticsPageviewsRowTableName]
+    )
 
-        // Normalize URLs to be relative to the root of the site.
-        // This also filters out any URLs that don't start with ourworldindata.org.
-        const pageviewsNormalized: RawPageview[] = pageviews.flatMap((p) => {
+    // Normalize URLs to be relative to the root of the site.
+    // This also filters out any URLs that don't start with ourworldindata.org.
+    const pageviewsNormalized = pageviews.flatMap(
+        (p: AnalyticsPageviewsRow) => {
             if (p.url.startsWith("https://ourworldindata.org/"))
                 return [
                     {
@@ -36,8 +48,8 @@ export class Pageview extends BaseEntity implements RawPageview {
                     },
                 ]
             else return []
-        })
+        }
+    )
 
-        return keyBy(pageviewsNormalized, (p) => p.url)
-    }
+    return keyBy(pageviewsNormalized, (p) => p.url)
 }

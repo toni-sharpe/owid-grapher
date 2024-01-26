@@ -69,7 +69,6 @@ import { getDatasetById, setTagsForDataset } from "../db/model/Dataset.js"
 import { User } from "../db/model/User.js"
 import { GdocPost } from "../db/model/Gdoc/GdocPost.js"
 import { GdocBase, Tag as TagEntity } from "../db/model/Gdoc/GdocBase.js"
-import { Pageview } from "../db/model/Pageview.js"
 import {
     syncDatasetToGitRepo,
     removeDatasetFromGitRepo,
@@ -100,6 +99,7 @@ import { In } from "typeorm"
 import { GIT_CMS_DIR } from "../gitCms/GitCmsConstants.js"
 import { logErrorAndMaybeSendToBugsnag } from "../serverUtils/errorLog.js"
 import { GdocFactory } from "../db/model/Gdoc/GdocFactory.js"
+import { AnalyticsPageviewsRowTableName } from "@ourworldindata/types"
 
 const apiRouter = new FunctionalRouter()
 const explorerAdminServer = new ExplorerAdminServer(GIT_CMS_DIR)
@@ -564,9 +564,13 @@ apiRouter.get(
         ).then((chart) => chart?.config?.slug)
         if (!slug) return {}
 
-        const pageviewsByUrl = await Pageview.findOneBy({
-            url: `https://ourworldindata.org/grapher/${slug}`,
-        })
+        const pageviewsByUrl = await db.knexRawFirst(
+            "select * from ?? where url = ?",
+            [
+                AnalyticsPageviewsRowTableName,
+                `https://ourworldindata.org/grapher/${slug}`,
+            ]
+        )
 
         return {
             pageviews: pageviewsByUrl ?? undefined,

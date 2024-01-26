@@ -6,7 +6,7 @@ import { isPathRedirectedToExplorer } from "../../explorerAdminServer/ExplorerRe
 import { ChartRecord, SearchIndexName } from "../../site/search/searchTypes.js"
 import { KeyChartLevel, OwidGdocLinkType, isNil } from "@ourworldindata/utils"
 import { MarkdownTextWrap } from "@ourworldindata/components"
-import { Pageview } from "../../db/model/Pageview.js"
+import { getAnalyticsPageviewsByUrlObj } from "../../db/model/Pageview.js"
 import { Link } from "../../db/model/Link.js"
 
 const computeScore = (record: Omit<ChartRecord, "score">): number => {
@@ -56,7 +56,7 @@ const getChartsRecords = async (): Promise<ChartRecord[]> => {
         )
     }
 
-    const pageviews = await Pageview.getViewsByUrlObj()
+    const pageviews = await getAnalyticsPageviewsByUrlObj()
 
     const records: ChartRecord[] = []
     for (const c of chartsToIndex) {
