@@ -391,6 +391,9 @@ export class SiteBaker {
 
     private async removeDeletedPosts() {
         if (!this.bakeSteps.has("removeDeletedPosts")) return
+
+        await db.getConnection()
+
         const postsApi = await getPostsFromSnapshots()
 
         const postSlugs = []
