@@ -269,6 +269,7 @@ export {
     type MinimalDataInsightInterface,
     type OwidGdocHomepageContent,
     type OwidGdocHomepageInterface,
+    type OwidGdocHomepageMetadata,
     DATA_INSIGHTS_INDEX_PAGE_SIZE,
     type OwidGdoc,
     type RawDetail,
