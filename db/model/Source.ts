@@ -1,9 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm"
 import { Knex } from "knex"
 import {
-    SourcesRowEnriched,
-    SourcesRowRaw,
-    SourcesRowTableName,
+    DbEnrichedSource,
+    DbRawSource,
+    SourcesTableName,
     parseSourcesRow,
 } from "@ourworldindata/types"
 
@@ -18,8 +18,8 @@ export class Source extends BaseEntity {
 export async function getSourceById(
     knex: Knex<any, any[]>,
     sourceId: number
-): Promise<SourcesRowEnriched | undefined> {
-    const rawSource = await knex<SourcesRowRaw>(SourcesRowTableName)
+): Promise<DbEnrichedSource | undefined> {
+    const rawSource = await knex<DbRawSource>(SourcesTableName)
         .where({ id: sourceId })
         .first()
     if (!rawSource) return undefined
@@ -34,8 +34,8 @@ export async function getSourceById(
 export async function getSourcesForDataset(
     knex: Knex<any, any[]>,
     datasetId: number
-): Promise<SourcesRowEnriched[]> {
-    const rawSources = await knex<SourcesRowRaw>(SourcesRowTableName).where({
+): Promise<DbEnrichedSource[]> {
+    const rawSources = await knex<DbRawSource>(SourcesTableName).where({
         datasetId,
     })
     const sources = rawSources.map((rawSource) =>
@@ -49,7 +49,7 @@ export async function getSourcesForDataset(
 }
 
 export async function sourceToDatapackage(
-    source: SourcesRowEnriched
+    source: DbEnrichedSource
 ): Promise<any> {
     return Object.assign({}, { name: source.name }, source.description)
 }

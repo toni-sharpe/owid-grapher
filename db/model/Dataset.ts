@@ -16,9 +16,9 @@ import * as db from "../db.js"
 import { VariableRow, variableTable, writeVariableCSV } from "./Variable.js"
 import _ from "lodash"
 import {
-    DatasetsRow,
-    DatasetsRowTableName,
-    TagsRow,
+    DbPlainDataset,
+    DatasetsTableName,
+    DbPlainTag,
 } from "@ourworldindata/types"
 import { Knex } from "knex"
 
@@ -45,8 +45,8 @@ export class Dataset extends BaseEntity {
 export async function getDatasetById(
     knex: Knex<any, any[]>,
     datasetId: number
-): Promise<DatasetsRow | undefined> {
-    const dataset = await knex<DatasetsRow>(DatasetsRowTableName)
+): Promise<DbPlainDataset | undefined> {
+    const dataset = await knex<DbPlainDataset>(DatasetsTableName)
         .where({ id: datasetId })
         .first()
     if (!dataset) return undefined
@@ -116,7 +116,7 @@ export async function datasetToDatapackage(
     const variables = (await db
         .knexTable(variableTable)
         .where({ datasetId })) as VariableRow[]
-    const tags = await db.knexRaw<Pick<TagsRow, "id" | "name">>(
+    const tags = await db.knexRaw<Pick<DbPlainTag, "id" | "name">>(
         `SELECT t.id, t.name FROM dataset_tags dt JOIN tags t ON t.id=dt.tagId WHERE dt.datasetId=?`,
         [datasetId],
         knex
@@ -159,7 +159,7 @@ export async function datasetToDatapackage(
 }
 
 export function isDatasetWithName(
-    dataset: DatasetsRow
-): dataset is DatasetsRow & { name: NonNullable<DatasetsRow["name"]> } {
+    dataset: DbPlainDataset
+): dataset is DbPlainDataset & { name: NonNullable<DbPlainDataset["name"]> } {
     return dataset.name !== undefined && dataset.name !== null
 }

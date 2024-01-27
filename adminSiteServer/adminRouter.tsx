@@ -43,7 +43,7 @@ import {
 } from "../baker/GrapherBaker.js"
 import { Chart } from "../db/model/Chart.js"
 import { getVariableMetadata } from "../db/model/Variable.js"
-import { DatasetFilesRow, DatasetsRow } from "@ourworldindata/types"
+import { DatasetFilesRow, DbPlainDataset } from "@ourworldindata/types"
 
 // Used for rate-limiting important endpoints (login, register) to prevent brute force attacks
 const limiterMiddleware = (
@@ -139,7 +139,7 @@ adminRouter.get("/datasets/:datasetId.csv", async (req, res) => {
     const datasetId = expectInt(req.params.datasetId)
 
     const datasetName = (
-        await db.knexRawFirst<Pick<DatasetsRow, "name">>(
+        await db.knexRawFirst<Pick<DbPlainDataset, "name">>(
             `SELECT name FROM datasets WHERE id=?`,
             [datasetId]
         )

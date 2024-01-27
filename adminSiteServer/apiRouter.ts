@@ -51,10 +51,10 @@ import {
     OwidGdoc,
 } from "@ourworldindata/utils"
 import {
-    DatasetTagsRow,
+    DatasetDbPlainTag,
     GrapherInterface,
     OwidGdocLinkType,
-    TagsRow,
+    DbPlainTag,
     grapherKeysToSerialize,
 } from "@ourworldindata/types"
 import {
@@ -1706,7 +1706,7 @@ apiRouter.get("/datasets.json", async (req) => {
     `)
 
     const tags = await db.knexRaw<
-        Pick<TagsRow, "id" | "name"> & Pick<DatasetTagsRow, "datasetId">
+        Pick<DbPlainTag, "id" | "name"> & Pick<DatasetDbPlainTag, "datasetId">
     >(`
         SELECT dt.datasetId, t.id, t.name FROM dataset_tags dt
         JOIN tags t ON dt.tagId = t.id

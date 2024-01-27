@@ -16,13 +16,13 @@ import * as db from "../db/db.js"
 import filenamify from "filenamify"
 import { execFormatted } from "../db/execWrapper.js"
 import { JsonError } from "@ourworldindata/utils"
-import { DatasetsRow } from "@ourworldindata/types"
+import { DbPlainDataset } from "@ourworldindata/types"
 import { Knex } from "knex"
 import { getSourcesForDataset } from "../db/model/Source.js"
 
 const datasetToReadme = async (
     knex: Knex<any, any[]>,
-    dataset: DatasetsRow
+    dataset: DbPlainDataset
 ): Promise<string> => {
     // TODO: add origins here
     const source = (await getSourcesForDataset(knex, dataset.id))[0]
