@@ -34,7 +34,6 @@ import {
     OwidVariableWithSourceAndDimension,
     Bounds,
     DEFAULT_BOUNDS,
-    detailOnDemandRegex,
     minTimeBoundFromJSONOrNegativeInfinity,
     maxTimeBoundFromJSONOrPositiveInfinity,
     TimeBounds,
@@ -67,6 +66,7 @@ import {
     getOriginAttributionFragments,
     sortBy,
     makeDetailIdFromText,
+    extractDetailsFromSyntax,
 } from "@ourworldindata/utils"
 import {
     MarkdownTextWrap,
@@ -1272,16 +1272,15 @@ export class Grapher
     @observable shouldIncludeDetailsInStaticExport = true
 
     // Used for superscript numbers in static exports
-    @computed get detailsOrderedByReference(): Set<string> {
-        if (typeof window === "undefined" || !window.details) return new Set()
+    @computed get detailsOrderedByReference(): string[] {
+        if (typeof window === "undefined") return []
 
         function extractDetailIdsFromText(
             text: string,
             isHidden = false
         ): string[] {
             if (isHidden) return []
-            const matches = text.matchAll(new RegExp(detailOnDemandRegex, "g"))
-            return [...matches].map(([detailId]) => detailId)
+            return extractDetailsFromSyntax(text)
         }
 
         // if a custom axis label is given, extract details from text.
@@ -1328,12 +1327,12 @@ export class Grapher
             ...noteDetailIds,
         ])
 
-        const validDetailIds = uniqueDetailIds.filter(
-            (detail: string) => window.details?.[detail] !== undefined
-        )
+        const validDetailIds = uniqueDetailIds.filter((detailId: string) => {
+            const detail = window.details?.[detailId]
+            return detail !== undefined
+        })
 
-        // todo: return array
-        return new Set(validDetailIds)
+        return validDetailIds
     }
 
     @computed get detailsMarkerInSvg(): DetailsMarker {
@@ -1349,7 +1348,7 @@ export class Grapher
     // be accessed by CaptionedChart and DownloadModal
     @computed get detailRenderers(): MarkdownTextWrap[] {
         if (typeof window === "undefined") return []
-        return [...this.detailsOrderedByReference].map((term, i) => {
+        return this.detailsOrderedByReference.map((term, i) => {
             let text = `**${i + 1}.** `
             const detail: EnrichedDetail | undefined = window.details?.[term]
             if (detail) {
