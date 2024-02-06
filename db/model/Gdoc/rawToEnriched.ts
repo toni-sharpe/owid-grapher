@@ -1986,6 +1986,11 @@ function parseHomepageIntro(
             enrichedFeaturedWork.push({
                 type: post.type,
                 url,
+                title: post.value.title,
+                authors: parseAuthors(post.value.authors),
+                description: post.value.description,
+                filename: post.value.filename,
+                kicker: post.value.kicker,
             })
         } else if (!post.value.title) {
             parseErrors.push({
