@@ -1987,7 +1987,9 @@ function parseHomepageIntro(
                 type: post.type,
                 url,
                 title: post.value.title,
-                authors: parseAuthors(post.value.authors),
+                authors: post.value.authors
+                    ? parseAuthors(post.value.authors)
+                    : undefined,
                 description: post.value.description,
                 filename: post.value.filename,
                 kicker: post.value.kicker,
