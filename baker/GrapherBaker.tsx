@@ -24,11 +24,7 @@ import {
     partition,
     ImageMetadata,
 } from "@ourworldindata/utils"
-import {
-    getRelatedResearchAndWritingForVariable,
-    isWordpressAPIEnabled,
-    isWordpressDBEnabled,
-} from "../db/wpdb.js"
+import { isWordpressAPIEnabled, isWordpressDBEnabled } from "../db/wpdb.js"
 import fs from "fs-extra"
 import * as lodash from "lodash"
 import { bakeGraphersToPngs } from "./GrapherImageBaker.js"
@@ -45,6 +41,7 @@ import {
     getPostEnrichedBySlug,
     getPostRelatedCharts,
     getRelatedArticles,
+    getRelatedResearchAndWritingForVariable,
 } from "../db/model/Post.js"
 import { ChartTypeName, GrapherInterface } from "@ourworldindata/types"
 import workerpool from "workerpool"
