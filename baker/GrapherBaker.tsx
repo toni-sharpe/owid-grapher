@@ -25,7 +25,6 @@ import {
     ImageMetadata,
 } from "@ourworldindata/utils"
 import {
-    getRelatedChartsForVariable,
     getRelatedResearchAndWritingForVariable,
     isWordpressAPIEnabled,
     isWordpressDBEnabled,
@@ -65,6 +64,7 @@ import { GdocPost } from "../db/model/Gdoc/GdocPost.js"
 import { getShortPageCitation } from "../site/gdocs/utils.js"
 import { isEmpty } from "lodash"
 import { getSlugForTopicTag, getTagToSlugMap } from "./GrapherBakingUtils.js"
+import { getRelatedChartsForVariable } from "../db/model/Chart.js"
 
 const renderDatapageIfApplicable = async (
     grapher: GrapherInterface,
