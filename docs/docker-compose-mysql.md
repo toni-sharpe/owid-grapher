@@ -129,6 +129,21 @@ A new database will then be created (expect another 10-20 minutes.)
 
 ## Troubleshooting
 
--   For **MacOS** users: Ensure the Docker Desktop is installed and running. If you encounter the error `Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?` then it's most likely that Docker is not running and you need to start (or restart) it
--   If you are blocked by a Docker session that won't delete then restart the machine, don't forget to start Docker for Desktop too.
+-   For **MacOS** users: Ensure the Docker for Desktop is installed and running. If you encounter the error `Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?` then it's most likely that Docker for Desktop is not running and you need to start (or restart) it
+-   On **MacOS** If you are blocked by a Docker session that won't delete then restart the machine, don't forget to start Docker for Desktop too.
 -   If you see `error getting credentials - err: exec: "docker-credential-desktop": executable file not found in $PATH, out: ''` [see this forum answer](https://forums.docker.com/t/docker-credential-desktop-exe-executable-file-not-found-in-path-using-wsl2/100225/5) - `vim ~/.docker/config.json` then change `credsStore` into `credStore`.
+
+### Docker troubleshooting
+
+This section is written from the perspective of someone using a machine on which they have used Docker the underlying software via any means in th past. Once running it can persist regardless of what you do with your machine. This is really useful, production doesn't break and your DB is always there when developing; but, if you've used Docker in any way on your machine before you may have containers and other artefacts operating that block you when joining any new project. 
+
+In my case I found a MySQL container and it wasn't going away just because I restarted etc. I had to:
+
+Firstly make sure Docker for Desktop was running on my Mac as an application
+Clean everything out for good measure, delete all things in all the screens inside Docker for Desktop, containers, images, builds, etc.
+Then run these two commands which found different things from those which were reported by Docker for Desktop. You may see `requires at least 1 argument` errors, that's because `ps -a -q` find nothing.
+`docker stop $(docker ps -a -q)`
+`docker rm $(docker ps -a -q)`
+Then used the actual quit button on Docker for Desktop.
+
+Note: OWID's charitable status and the open source factor here get free access to Docker for Desktop, so you may have used completely different tools to get docker up.
