@@ -132,10 +132,11 @@ A new database will then be created (expect another 10-20 minutes.)
 -   For **MacOS** users: Ensure the Docker for Desktop is installed and running. If you encounter the error `Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?` then it's most likely that Docker for Desktop is not running and you need to start (or restart) it
 -   On **MacOS** If you are blocked by a Docker session that won't delete then restart the machine, don't forget to start Docker for Desktop too.
 -   If you see `error getting credentials - err: exec: "docker-credential-desktop": executable file not found in $PATH, out: ''` [see this forum answer](https://forums.docker.com/t/docker-credential-desktop-exe-executable-file-not-found-in-path-using-wsl2/100225/5) - `vim ~/.docker/config.json` then change `credsStore` into `credStore`.
+-   Make sure mysql is on your PATH: `export PATH=${PATH}:/usr/local/mysql/bin`.
 
 ### Docker troubleshooting
 
-This section is written from the perspective of someone using a machine on which they have used Docker the underlying software via any means in th past. Once running it can persist regardless of what you do with your machine. This is really useful, production doesn't break and your DB is always there when developing; but, if you've used Docker in any way on your machine before you may have containers and other artefacts operating that block you when joining any new project. 
+This section is written from the perspective of someone using a machine on which they have used Docker the underlying software via any means in th past. Once running it can persist regardless of what you do with your machine. This is really useful, production doesn't break and your DB is always there when developing; but, if you've used Docker in any way on your machine before you may have containers and other artefacts operating that block you when joining any new project. Note that Docker can be run directly from the terminal and via OS applications, notably Docker for Desktop on MacOS.
 
 In my case I found a MySQL container and it wasn't going away just because I restarted etc. I had to:
 
